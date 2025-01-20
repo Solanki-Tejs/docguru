@@ -1,0 +1,56 @@
+database:docguru
+mysql> create database docguru;
+
+
+table:
+user_detail:mysql> create table user_detail(uid int AUTO_INCREMENT,name varchar(30),email varchar(80),password varchar(20),PRIMARY KEY (uid));
+
+
+
+
+(env) PS D:\Projects\FastAPI> pip list
+Package                Version
+---------------------- ----------
+annotated-types        0.7.0
+anyio                  4.7.0
+bcrypt                 3.2.0
+certifi                2024.12.14
+cffi                   1.17.1
+click                  8.1.8
+colorama               0.4.6
+dnspython              2.7.0
+email_validator        2.2.0
+fastapi                0.115.6
+fastapi-cli            0.0.7
+h11                    0.14.0
+httpcore               1.0.7
+httptools              0.6.4
+httpx                  0.28.1
+idna                   3.10
+Jinja2                 3.1.5
+markdown-it-py         3.0.0
+MarkupSafe             3.0.2
+mdurl                  0.1.2
+mysql-connector-python 9.1.0
+passlib                1.7.4
+pip                    24.3.1
+pycparser              2.22
+pydantic               2.10.4
+pydantic_core          2.27.2
+Pygments               2.18.0
+PyJWT                  2.8.0
+python-decouple        3.8
+python-dotenv          1.0.1
+python-multipart       0.0.20
+PyYAML                 6.0.2
+rich                   13.9.4
+rich-toolkit           0.12.0
+shellingham            1.5.4
+six                    1.17.0
+sniffio                1.3.1
+starlette              0.41.3
+typer                  0.15.1
+typing_extensions      4.12.2
+uvicorn                0.34.0
+watchfiles             1.0.3
+websockets             14.1
