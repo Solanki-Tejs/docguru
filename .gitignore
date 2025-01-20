@@ -44,3 +44,4 @@ app.*.map.json
 
 /lib/API/.env
 /assets/.env
+/lib/API/database.py

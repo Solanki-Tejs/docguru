@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:docguru/Animation/login-register.dart';
 import 'package:docguru/PAGE/rename_it.dart';
 import 'package:flutter/material.dart';
 import 'package:docguru/PAGE/SignUp.dart';
@@ -187,10 +188,12 @@ class _SignInState extends State<SignIn> {
                               color: Colors.blue, fontSize: scrwidth / 27),
                         ),
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignUp()));
+                          Navigator.push(context,
+                              createSlideRoute(SignUp(), position: 'right'));
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => SignUp()));
                         },
                       )
                     ],
