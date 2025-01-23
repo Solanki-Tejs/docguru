@@ -60,8 +60,6 @@ class _SignInState extends State<SignIn> {
     double scrwidth = size.width;
     //Screen hight
     double scrheight = size.height;
-    var url = dotenv.env['VAR_NAME'];
-    print(url);
     print(scrheight);
     print(scrwidth);
 

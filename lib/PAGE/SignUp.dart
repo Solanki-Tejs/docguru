@@ -126,6 +126,7 @@ class _SignUpState extends State<SignUp> {
                                           email: email.text,
                                           name: name.text,
                                           password: password.text,
+                                          RouteName: "SignUp"
                                         )));
                           },
                           child: Text(

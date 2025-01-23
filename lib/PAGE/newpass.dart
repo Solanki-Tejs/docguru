@@ -1,10 +1,15 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:docguru/Animation/login-register.dart';
 import 'package:docguru/PAGE/SignIn.dart';
 import 'package:docguru/PAGE/rename_it.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class Newpass extends StatefulWidget {
-  const Newpass({super.key});
+  final String email;
+  Newpass({super.key, required this.email});
 
   @override
   State<Newpass> createState() => _NewpassState();
@@ -13,8 +18,37 @@ class Newpass extends StatefulWidget {
 class _NewpassState extends State<Newpass> {
   bool _obscureText = true;
 
-  final email = TextEditingController();
-  final password = TextEditingController();
+  final configpassword = TextEditingController();
+  final newpassword = TextEditingController();
+
+  Future<void> SetNewPass() async {
+    if (newpassword.text == configpassword.text) {
+      print(widget.email);
+      var data = {
+        "email": widget.email,
+        "password": configpassword.text
+      };
+      try {
+        var url = dotenv.env['URL']! + "ResetPass";
+        print(url);
+
+        var res = await http.post(Uri.parse(url),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode(data));
+
+        var Jres = await jsonDecode(res.body);
+        print(Jres);
+        if (Jres["status"] == "200") {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => SignIn()));
+        }
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      print("dont match");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,19 +88,8 @@ class _NewpassState extends State<Newpass> {
                   SizedBox(
                     height: scrheight / 30,
                   ),
-                  // TextFormField(
-                  //     decoration: InputDecoration(
-                  //   fillColor: Colors.red,
-                  //   border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(10)),
-                  //   prefixIcon: const Icon(Icons.person),
-                  //   labelText: 'User Name',
-                  // )),
-                  // SizedBox(
-                  //   height: scrheight / 70,
-                  // ),
                   TextFormField(
-                    controller: password,
+                    controller: newpassword,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       fillColor: Colors.red,
@@ -91,7 +114,7 @@ class _NewpassState extends State<Newpass> {
                     height: scrheight / 70,
                   ),
                   TextFormField(
-                    controller: password,
+                    controller: configpassword,
                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       fillColor: Colors.red,
@@ -115,7 +138,6 @@ class _NewpassState extends State<Newpass> {
                   SizedBox(
                     height: scrheight / 20,
                   ),
-
                   SizedBox(
                       //height and width of button
                       //aane fix kari deje karvu hoi to
@@ -124,6 +146,7 @@ class _NewpassState extends State<Newpass> {
                       child: ElevatedButton(
                           onPressed: () {
                             // login();
+                            SetNewPass();
                           },
                           child: Text(
                             "Config",
@@ -144,36 +167,6 @@ class _NewpassState extends State<Newpass> {
                   SizedBox(
                     height: scrheight / 10,
                   ),
-                  // Divider(
-                  //   endIndent: scrwidth / 3,
-                  //   indent: scrwidth / 3,
-                  //   thickness: 2,
-                  // ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     Text(
-                  //       "if you dont have account click ",
-                  //       style: TextStyle(
-                  //           color: Colors.white, fontSize: scrwidth / 27),
-                  //     ),
-                  //     InkWell(
-                  //       child: Text(
-                  //         "Here",
-                  //         style: TextStyle(
-                  //             color: Colors.blue, fontSize: scrwidth / 27),
-                  //       ),
-                  //       onTap: () {
-                  //         Navigator.push(context,
-                  //             createSlideRoute(SignIn(), position: 'right'));
-                  //         // Navigator.push(
-                  //         //     context,
-                  //         //     MaterialPageRoute(
-                  //         //         builder: (context) => SignUp()));
-                  //       },
-                  //     )
-                  //   ],
-                  // ),
                 ],
               )),
             ),

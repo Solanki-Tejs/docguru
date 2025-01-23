@@ -1,5 +1,5 @@
 import 'package:docguru/Animation/login-register.dart';
-import 'package:docguru/PAGE/resetpass.dart';
+import 'package:docguru/PAGE/email_veri.dart';
 import 'package:flutter/material.dart';
 
 class Forgetpass extends StatefulWidget {
@@ -10,6 +10,8 @@ class Forgetpass extends StatefulWidget {
 }
 
 class _ForgetpassState extends State<Forgetpass> {
+  final email = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     //screen size
@@ -48,7 +50,7 @@ class _ForgetpassState extends State<Forgetpass> {
                     height: scrheight / 15,
                   ),
                   TextFormField(
-                      // controller:
+                      controller: email,
                       style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
                         fillColor: Colors.red,
@@ -60,37 +62,9 @@ class _ForgetpassState extends State<Forgetpass> {
                   SizedBox(
                     height: scrheight / 70,
                   ),
-                  // Divider(
-                  //   endIndent: scrwidth / 1.8,
-                  //   indent: scrwidth / 40,
-                  //   thickness: 2,
-                  // ),
                   SizedBox(
                     height: scrheight / 70,
                   ),
-                  // Row(
-                  //   // mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     // Text(
-                  //     //   "if you dont have account click ",
-                  //     //   style: TextStyle(
-                  //     //       color: Colors.white, fontSize: scrwidth / 27),
-                  //     // ),
-                  //     InkWell(
-                  //       child: Text(
-                  //         "Resend it",
-                  //         style: TextStyle(
-                  //             color: Colors.blue, fontSize: scrwidth / 27),
-                  //       ),
-                  //       onTap: () {
-                  //         // Navigator.push(
-                  //         //     context,
-                  //         //     MaterialPageRoute(
-                  //         //         builder: (context) => SignUp()));
-                  //       },
-                  //     )
-                  //   ],
-                  // ),
                   SizedBox(
                     height: scrheight / 30,
                   ),
@@ -101,8 +75,13 @@ class _ForgetpassState extends State<Forgetpass> {
                       height: scrheight * 0.059,
                       child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(context,
-                            createSlideRoute(Resetpass(), position: 'right'));
+                            Navigator.push(
+                                context,
+                                createSlideRoute(
+                                    EmailVeri(
+                                      email: email.text,RouteName: "ForgotPass",
+                                    ),
+                                    position: 'right'));
                           },
                           child: Text(
                             "Send OTP",

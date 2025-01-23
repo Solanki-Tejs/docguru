@@ -1,6 +1,7 @@
 // ignore_for_file: sort_child_properties_last, prefer_const_constructors, avoid_print, prefer_interpolation_to_compose_strings, file_names
 
 import 'dart:convert';
+import 'package:docguru/PAGE/newpass.dart';
 import 'package:docguru/PAGE/rename_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -8,12 +9,14 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EmailVeri extends StatefulWidget {
-  final String name, email, password;
-  const EmailVeri({
+  final String email, RouteName;
+  String? name, password;
+  EmailVeri({
     super.key,
-    required this.name,
+    this.name,
+    this.password,
     required this.email,
-    required this.password,
+    required this.RouteName,
   });
 
   @override
@@ -164,7 +167,15 @@ class _EmailVeriState extends State<EmailVeri> {
                       child: ElevatedButton(
                           onPressed: () {
                             // login();
-                            signup();
+                            print(widget.RouteName);
+                            if (widget.RouteName == "ForgotPass") {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Newpass(email: widget.email,)));
+                            } else {
+                              signup();
+                            }
                           },
                           child: Text(
                             "Verifiy",
