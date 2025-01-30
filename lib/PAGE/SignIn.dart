@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:docguru/Animation/login-register.dart';
+import 'package:docguru/PAGE/Home.dart';
 import 'package:docguru/PAGE/forgetpass.dart';
 import 'package:docguru/PAGE/rename_it.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ class _SignInState extends State<SignIn> {
         print("hello world!");
         prefs.setString("token", Jres["token"]);
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => RenameIt()));
+            context, MaterialPageRoute(builder: (context) => Home()));
       }
     } catch (e) {
       print(e);
