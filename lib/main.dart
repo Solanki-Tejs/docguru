@@ -1,6 +1,7 @@
 // ignore_for_file: sort_child_properties_last, prefer_const_constructors, avoid_print, prefer_interpolation_to_compose_strings, file_names, camel_case_types
 
 import 'package:docguru/PAGE/SignIn.dart';
+import 'package:docguru/PAGE/email_veri.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -9,6 +10,7 @@ void main() async {
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
     home: SignIn(),
+    // home: EmailVeri(email: '', RouteName: 'SignUp'),
   ));
 }
 

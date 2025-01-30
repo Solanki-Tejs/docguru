@@ -1,11 +1,13 @@
 // ignore_for_file: sort_child_properties_last, prefer_const_constructors, avoid_print, prefer_interpolation_to_compose_strings, file_names
 
+import 'dart:async';
 import 'dart:convert';
 import 'package:docguru/PAGE/newpass.dart';
 import 'package:docguru/PAGE/rename_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EmailVeri extends StatefulWidget {
@@ -24,19 +26,26 @@ class EmailVeri extends StatefulWidget {
 }
 
 class _EmailVeriState extends State<EmailVeri> {
+  // var send_otp = '102003';
   var send_otp;
   final otp = TextEditingController();
+
   @override
   void initState() {
     super.initState();
+
+    // Send OTP
     email_veri();
   }
 
-  Future<void> signup() async {
-    print(send_otp);
-    print(otp.text);
-    if (send_otp == otp.text) {
+  Future<void> signup(otp) async {
+    // print(send_otp);
+    print(otp);
+    // print(se);
+    if (send_otp == otp) {
+      print('Verification successfull');
       print(widget.email);
+
       print(widget.name);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var data = {
@@ -56,6 +65,11 @@ class _EmailVeriState extends State<EmailVeri> {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => RenameIt()));
       }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Invalid PIN! Try again.")),
+      );
+      _pinController.clear();
     }
   }
 
@@ -74,6 +88,8 @@ class _EmailVeriState extends State<EmailVeri> {
     }
   }
 
+  final TextEditingController _pinController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     //screen size
@@ -85,6 +101,28 @@ class _EmailVeriState extends State<EmailVeri> {
     print(scrheight);
     print(scrwidth);
     print(widget.email);
+
+    final defaultPinTheme = PinTheme(
+      width: 56,
+      height: 56,
+      textStyle: TextStyle(
+          fontSize: 20,
+          color: Color.fromARGB(225, 7, 7, 27),
+          fontWeight: FontWeight.w600),
+      decoration: BoxDecoration(
+        color: Color.fromRGBO(142, 147, 159, 1),
+        // border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
+        borderRadius: BorderRadius.circular(8),
+      ),
+    );
+
+    final focusedPinTheme = defaultPinTheme.copyDecorationWith(
+      color: Color.fromRGBO(160, 142, 211, 1),
+
+      // border: Border.all(color: Color.fromRGBO(160, 142, 211, 1)),
+      borderRadius: BorderRadius.circular(15),
+    );
+
     return Container(
       //backgroundColor change
       height: double.infinity,
@@ -96,7 +134,7 @@ class _EmailVeriState extends State<EmailVeri> {
             child: Padding(
               //padding for text and textfild
               padding: EdgeInsets.fromLTRB(
-                  scrwidth / 25, scrheight * 0.20, scrwidth / 25, 0),
+                  scrwidth / 20, scrheight * 0.20, scrwidth / 20, 0),
               child: Form(
                   child: Column(
                 children: [
@@ -105,23 +143,67 @@ class _EmailVeriState extends State<EmailVeri> {
                       Text(
                         "E-mail verification",
                         style: TextStyle(
-                            color: Colors.white, fontSize: scrwidth / 10),
+                            color: Colors.white,
+                            // fontFamily: 'Arial',
+                            fontSize: scrwidth / 15),
                       ),
                     ],
                   ),
                   SizedBox(
-                    height: scrheight / 10,
+                    height: scrheight / 15,
                   ),
-                  TextFormField(
-                      controller: otp,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        fillColor: Colors.red,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10)),
-                        prefixIcon: const Icon(Icons.phonelink_lock_rounded),
-                        labelText: 'verification code',
-                      )),
+                  Center(
+                    child: Text(
+                      'An OTP has been send at',
+                      style: TextStyle(
+                          color: Colors.white,
+                          // fontFamily: 'Arial',
+                          fontSize: scrwidth / 23),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      widget.email,
+                      style: TextStyle(
+                          color: Colors.white,
+                          // fontFamily: 'Arial',
+                          fontWeight: FontWeight.w800,
+                          fontSize: scrwidth / 27),
+                    ),
+                  ),
+                  SizedBox(
+                    height: scrheight / 20,
+                  ),
+                  Pinput(
+                    controller: _pinController,
+                    keyboardType: TextInputType.number,
+                    defaultPinTheme: defaultPinTheme,
+                    focusedPinTheme: focusedPinTheme,
+                    length: 6,
+                    // onCompleted: (pin) {
+                    //   print(widget.RouteName);
+                    //   if (widget.RouteName == "ForgotPass") {
+                    //     Navigator.pushReplacement(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //             builder: (context) => Newpass(
+                    //                   email: widget.email,
+                    //                 )));
+                    //   } else {
+                    //     signup(pin);
+                    //   }
+                    // },
+                  ),
+                  // TextFormField(
+                  //     controller: otp,
+                  //     style: TextStyle(color: Colors.white),
+                  //     decoration: InputDecoration(
+                  //       fillColor: Colors.red,
+                  //       border: OutlineInputBorder(
+                  //           borderRadius: BorderRadius.circular(10)),
+                  //       prefixIcon: const Icon(Icons.phonelink_lock_rounded),
+                  //       labelText: 'verification code',
+                  //     )),
                   SizedBox(
                     height: scrheight / 70,
                   ),
@@ -142,22 +224,20 @@ class _EmailVeriState extends State<EmailVeri> {
                       //       color: Colors.white, fontSize: scrwidth / 27),
                       // ),
                       InkWell(
-                        child: Text(
-                          "Resend it",
-                          style: TextStyle(
-                              color: Colors.blue, fontSize: scrwidth / 27),
-                        ),
-                        onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => SignUp()));
-                        },
-                      )
+                          child: Text(
+                            "Resend it",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                // fontFamily: 'Arial',
+                                fontSize: scrwidth / 27),
+                          ),
+                          onTap: () {
+                            print('resent otp');
+                          })
                     ],
                   ),
                   SizedBox(
-                    height: scrheight / 30,
+                    height: scrheight / 15,
                   ),
                   SizedBox(
                       //height and width of button
@@ -172,15 +252,25 @@ class _EmailVeriState extends State<EmailVeri> {
                               Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => Newpass(email: widget.email,)));
+                                      builder: (context) => Newpass(
+                                            email: widget.email,
+                                          )));
                             } else {
-                              signup();
+                              String otp = _pinController.text;
+                              print("In verify:" + otp);
+                              if (otp.isEmpty || otp.length < 6) {
+                                return;
+                              } else {
+                                signup(otp);
+                              }
                             }
                           },
                           child: Text(
                             "Verifiy",
                             style: TextStyle(
-                                color: Colors.white, fontSize: scrwidth / 22),
+                                color: Colors.white,
+                                // fontFamily: 'Arial',
+                                fontSize: scrwidth / 22),
                           ),
                           style: ButtonStyle(
                               //color of button

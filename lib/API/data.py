@@ -2,6 +2,7 @@ from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from database import database
+from typing import List,Optional
 from dotenv import load_dotenv
 from email.message import EmailMessage
 import jwt,os,random,smtplib
@@ -38,6 +39,13 @@ class Post_EmailVeri(BaseModel):
     email: str | None
     pass
 
+class Update_detail(BaseModel):
+    name:Optional[str]=None
+    email:Optional[str]=None
+    password:Optional[str]=None 
+    pass
+
+
 def create_jwt(email):
     playlod={
         "email":email
@@ -47,10 +55,10 @@ def create_jwt(email):
     pass
 
 def send_email(to_mail):
-    opt=""
+    otp=""
     for i in range(6):
-        opt+=str(random.randint(0,9))
-    print(opt)
+        otp+=str(random.randint(0,9))
+    print(otp)
     try:
         server =smtplib.SMTP("smtp.gmail.com",587)
         server.starttls()
@@ -61,9 +69,9 @@ def send_email(to_mail):
         msg["subject"]="opt verification"
         msg["from"]=from_email
         msg["to"]=to_mail
-        msg.set_content("opt :"+opt)
+        msg.set_content("opt :"+otp)
         server.send_message(msg)
-        return opt
+        return otp
     except Exception as e:
         print(e)
         return None
@@ -122,6 +130,23 @@ async def SignUp(data:Post_SignUp):
         con.close()
     pass
 
+
+
+@app.post("/ResetPass")
+async def Reset_pass(data:Update_detail):
+    db=database()
+    try:
+        con=db.cursor()
+        query=f"UPDATE user_detail SET password='{data.password}' WHERE email='{data.email}'"
+        con.execute(query)
+        db.commit()
+        return {"status":"200","msg":"Successful"}
+    except Exception as e:
+        print(e)   
+        return {"status":"500","msg":"Internal Server Error"}
+    finally:
+        con.close()
+    pass
 
 
 @app.get("/")

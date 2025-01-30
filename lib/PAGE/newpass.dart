@@ -21,13 +21,12 @@ class _NewpassState extends State<Newpass> {
   final configpassword = TextEditingController();
   final newpassword = TextEditingController();
 
+  final _myForm = GlobalKey<FormState>();
+
   Future<void> SetNewPass() async {
     if (newpassword.text == configpassword.text) {
       print(widget.email);
-      var data = {
-        "email": widget.email,
-        "password": configpassword.text
-      };
+      var data = {"email": widget.email, "password": configpassword.text};
       try {
         var url = dotenv.env['URL']! + "ResetPass";
         print(url);
@@ -72,103 +71,133 @@ class _NewpassState extends State<Newpass> {
             child: Padding(
               //padding for text and textfild
               padding: EdgeInsets.fromLTRB(
-                  scrwidth / 25, scrheight * 0.20, scrwidth / 25, 0),
+                  scrwidth / 20, scrheight * 0.20, scrwidth / 20, 0),
               child: Form(
+                  key: _myForm,
                   child: Column(
-                children: [
-                  Row(
                     children: [
-                      Text(
-                        "Set New Password",
-                        style: TextStyle(
-                            color: Colors.white, fontSize: scrwidth / 10),
+                      Row(
+                        children: [
+                          Text(
+                            "Set New Password",
+                            style: TextStyle(
+                                color: Colors.white,
+                                // fontFamily: 'Arial',
+                                fontSize: scrwidth / 15),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: scrheight / 15,
+                      ),
+                      TextFormField(
+                        controller: newpassword,
+                        style: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          fillColor: Colors.red,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          prefixIcon: const Icon(Icons.lock),
+                          labelText: 'New Password',
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            child: Icon(_obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Password is required";
+                          }
+                          final passwordRegex = RegExp(
+                              r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$');
+                          if (!passwordRegex.hasMatch(value)) {
+                            return 'Password must be \n\t - atleast 8 characters long, \n\t - include one uppercase letter, \n\t - one lowercase letter, and one number';
+                          }
+                          return null;
+                        },
+                        obscureText: _obscureText,
+                      ),
+                      SizedBox(
+                        height: scrheight / 70,
+                      ),
+                      TextFormField(
+                        controller: configpassword,
+                        style: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          fillColor: Colors.red,
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          prefixIcon: const Icon(Icons.lock),
+                          labelText: 'Confirm Password',
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            child: Icon(_obscureText
+                                ? Icons.visibility
+                                : Icons.visibility_off),
+                          ),
+                        ),
+                        validator: (value) {
+                          print(value);
+                          print(newpassword.text);
+                          if (value == null || value.isEmpty) {
+                            return "Password is required";
+                          }
+                          if (value != newpassword.text) {
+                            return 'Password does not match';
+                          }
+                          return null;
+                        },
+                        obscureText: _obscureText,
+                      ),
+                      SizedBox(
+                        height: scrheight / 20,
+                      ),
+                      SizedBox(
+                          //height and width of button
+                          //aane fix kari deje karvu hoi to
+                          width: double.infinity,
+                          height: scrheight * 0.059,
+                          child: ElevatedButton(
+                              onPressed: () {
+                                if (_myForm.currentState!.validate()) {
+                                  SetNewPass();
+                                }
+                                // login();
+                              },
+                              child: Text(
+                                "Change password",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: scrwidth / 22),
+                              ),
+                              style: ButtonStyle(
+                                  //color of button
+                                  backgroundColor:
+                                      WidgetStateProperty.all<Color>(
+                                          Color.alphaBlend(
+                                              Colors.deepPurpleAccent,
+                                              Colors.indigo)),
+                                  shape: WidgetStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    //side: BorderSide(color: Colors.red)
+                                  ))))),
+                      SizedBox(
+                        height: scrheight / 10,
                       ),
                     ],
-                  ),
-                  SizedBox(
-                    height: scrheight / 30,
-                  ),
-                  TextFormField(
-                    controller: newpassword,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      fillColor: Colors.red,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      prefixIcon: const Icon(Icons.lock),
-                      labelText: 'Password',
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        },
-                        child: Icon(_obscureText
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                      ),
-                    ),
-                    obscureText: _obscureText,
-                  ),
-                  SizedBox(
-                    height: scrheight / 70,
-                  ),
-                  TextFormField(
-                    controller: configpassword,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      fillColor: Colors.red,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      prefixIcon: const Icon(Icons.lock),
-                      labelText: 'Password',
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        },
-                        child: Icon(_obscureText
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                      ),
-                    ),
-                    obscureText: _obscureText,
-                  ),
-                  SizedBox(
-                    height: scrheight / 20,
-                  ),
-                  SizedBox(
-                      //height and width of button
-                      //aane fix kari deje karvu hoi to
-                      width: double.infinity,
-                      height: scrheight * 0.059,
-                      child: ElevatedButton(
-                          onPressed: () {
-                            // login();
-                            SetNewPass();
-                          },
-                          child: Text(
-                            "Config",
-                            style: TextStyle(
-                                color: Colors.white, fontSize: scrwidth / 22),
-                          ),
-                          style: ButtonStyle(
-                              //color of button
-                              backgroundColor: WidgetStateProperty.all<Color>(
-                                  Color.alphaBlend(
-                                      Colors.deepPurpleAccent, Colors.indigo)),
-                              shape: WidgetStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                //side: BorderSide(color: Colors.red)
-                              ))))),
-                  SizedBox(
-                    height: scrheight / 10,
-                  ),
-                ],
-              )),
+                  )),
             ),
           )),
     );
