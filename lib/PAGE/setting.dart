@@ -15,6 +15,7 @@ class _Setting extends State<Setting> {
     return Scaffold(
         backgroundColor: Color.fromARGB(225, 7, 7, 27),
         appBar: AppBar(
+          foregroundColor: Colors.white,
           backgroundColor: Colors.deepPurpleAccent.withOpacity(0.3),
           // title: Text(
           //   "data",

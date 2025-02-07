@@ -42,6 +42,7 @@ class _HomeState extends State<Home> {
         // backgroundColor: Colors.transparent,
         backgroundColor: Color.fromARGB(225, 7, 7, 27),
         appBar: AppBar(
+          foregroundColor: Colors.white,
           backgroundColor: Colors.transparent,
           title: Text(
             "DocGuru",
@@ -85,6 +86,12 @@ class _HomeState extends State<Home> {
                         padding: EdgeInsets.zero,
                         children: [
                           ListTile(
+                            // hoverColor: Colors.deepPurpleAccent,
+                            splashColor: Colors.deepPurpleAccent,
+                            // selectedColor: Colors.deepPurpleAccent,
+                            // tileColor: Colors.deepPurpleAccent,
+                            // focusColor: Colors.deepPurpleAccent,
+                            // selectedTileColor: Colors.deepPurpleAccent,
                             leading: Icon(Icons.description_outlined,
                                 color: Colors.white),
                             title: Text("PDF name",
@@ -133,13 +140,16 @@ class _HomeState extends State<Home> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
                   Expanded(
                     child: TextField(
                       // controller: _controller,
+                      style: TextStyle(color: Colors.white),
                       decoration: InputDecoration(
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                         hintText: 'Type a message...',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
