@@ -42,20 +42,12 @@ class _ForgetpassState extends State<Forgetpass> {
                     children: [
                       Row(
                         children: [
-                          GestureDetector(
-                            child: Text(
-                              "Forget Password",
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: scrwidth / 15),
-                            ),
-                            onTap: () {
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Newpass(
-                                            email: 'User Mail',
-                                          )));
-                            },
+                          Text(
+                            "Forget Password",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'TimesNewRoman',
+                                fontSize: scrwidth / 15),
                           ),
                         ],
                       ),

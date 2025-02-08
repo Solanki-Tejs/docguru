@@ -35,7 +35,10 @@ class _Setting extends State<Setting> {
                   children: [
                     Text(
                       "Settings",
-                      style: TextStyle(color: Colors.white, fontSize: 40),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'TimesNewRoman',
+                          fontSize: 40),
                     )
                   ],
                 ),

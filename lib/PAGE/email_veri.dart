@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:docguru/PAGE/Home.dart';
 import 'package:docguru/PAGE/newpass.dart';
 import 'package:docguru/PAGE/rename_it.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,7 @@ class _EmailVeriState extends State<EmailVeri> {
         print("hello world!");
         prefs.setString("token", Jres["token"]);
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => RenameIt()));
+            context, MaterialPageRoute(builder: (context) => Home()));
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -144,7 +145,7 @@ class _EmailVeriState extends State<EmailVeri> {
                         "E-mail verification",
                         style: TextStyle(
                             color: Colors.white,
-                            // fontFamily: 'Arial',
+                            fontFamily: 'TimesNewRoman',
                             fontSize: scrwidth / 15),
                       ),
                     ],

@@ -82,7 +82,7 @@ class _NewpassState extends State<Newpass> {
                             "Set New Password",
                             style: TextStyle(
                                 color: Colors.white,
-                                // fontFamily: 'Arial',
+                                fontFamily: 'TimesNewRoman',
                                 fontSize: scrwidth / 15),
                           ),
                         ],

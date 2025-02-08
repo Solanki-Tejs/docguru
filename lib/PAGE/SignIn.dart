@@ -84,21 +84,12 @@ class _SignInState extends State<SignIn> {
                     children: [
                       Row(
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              print("Hello");
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Home()));
-                            },
-                            child: Text(
-                              "Login",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  // fontFamily: 'Arial',
-                                  fontSize: scrwidth / 10),
-                            ),
+                          Text(
+                            "Login",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'TimesNewRoman',
+                                fontSize: scrwidth / 10),
                           ),
                         ],
                       ),

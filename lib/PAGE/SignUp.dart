@@ -51,24 +51,12 @@ class _SignUpState extends State<SignUp> {
                     children: [
                       Row(
                         children: [
-                          GestureDetector(
-                            child: Text(
-                              "Sign up",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  // fontFamily: 'Arial',
-                                  fontSize: scrwidth / 10),
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => EmailVeri(
-                                          email: 'User Mail',
-                                          name: name.text,
-                                          password: password.text,
-                                          RouteName: "SignUp")));
-                            },
+                          Text(
+                            "Sign up",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'TimesNewRoman',
+                                fontSize: scrwidth / 10),
                           ),
                         ],
                       ),

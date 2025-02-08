@@ -26,9 +26,9 @@ flutter:
     - assets/.env
 
   fonts:
-  # - family: Arial
-  #   fonts:
-  #     - asset: assets/fonts/Arial-Regular.ttf
+  - family: TimesNewRoman
+    fonts:
+      - asset: assets/fonts/times-new-roman.ttf
   - family: Rokkitt
     fonts:
       - asset: assets/fonts/Rokkitt-Regular.ttf
