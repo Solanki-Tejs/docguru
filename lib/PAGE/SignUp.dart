@@ -2,10 +2,14 @@
 
 // import 'dart:convert';
 
+import 'dart:convert';
+
 import 'package:docguru/Animation/login-register.dart';
 import 'package:docguru/PAGE/email_veri.dart';
 import 'package:flutter/material.dart';
 import 'package:docguru/PAGE/SignIn.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:http/http.dart' as http;
@@ -24,6 +28,33 @@ class _SignUpState extends State<SignUp> {
   final password = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
+
+  Future<void> EmailCheck() async {
+    var url = dotenv.env['URL']! + "EmailCheck";
+
+    var data = {
+      "email": email.text,
+    };
+    var res = await http.post(Uri.parse(url),
+        headers: {"Content-Type": "application/json"}, body: jsonEncode(data));
+
+    print(res.statusCode);
+    if (res.statusCode != 403) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => EmailVeri(
+                  email: email.text,
+                  name: name.text,
+                  password: password.text,
+                  RouteName: "SignUp")));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Email exits'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -166,14 +197,7 @@ class _SignUpState extends State<SignUp> {
                           child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => EmailVeri(
-                                              email: email.text,
-                                              name: name.text,
-                                              password: password.text,
-                                              RouteName: "SignUp")));
+                                  EmailCheck();
                                 }
                               },
                               child: Text(

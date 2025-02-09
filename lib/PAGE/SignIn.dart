@@ -49,6 +49,11 @@ class _SignInState extends State<SignIn> {
         prefs.setString("token", Jres["token"]);
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => Home()));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Detail dont match'),
+          backgroundColor: Colors.red,
+        ));
       }
     } catch (e) {
       print(e);

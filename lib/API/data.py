@@ -23,23 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class Post_SignIn(BaseModel):
-    # name: str | None
-    email: str | None
-    password: str | None
-    pass
-
-class Post_SignUp(BaseModel):
-    name: str | None
-    email: str | None
-    password: str | None
-    pass
-
-class Post_EmailVeri(BaseModel):
-    email: str | None
-    pass
-
-class Update_detail(BaseModel):
+class details(BaseModel):
     name:Optional[str]=None
     email:Optional[str]=None
     password:Optional[str]=None 
@@ -78,7 +62,7 @@ def send_email(to_mail):
     pass
 
 @app.post("/SignIn")
-async def SignIn(response: Response, data:Post_SignIn):
+async def SignIn(response: Response, data:details):
     db=database()
     
     try:
@@ -97,7 +81,7 @@ async def SignIn(response: Response, data:Post_SignIn):
                 return {"msg":"Successful","token":token}
             else:
                 print("hello")
-                response.status_code = status.HTTP_403_FORBIDDEN
+                response.status_code = status.HTTP_401_UNAUTHORIZED
                 # return {"status":"403","msg":"Password dont match"}
     except Exception as e:
         print(e)
@@ -108,7 +92,7 @@ async def SignIn(response: Response, data:Post_SignIn):
     pass
 
 @app.post("/EmailVeri")
-async def EmailVeri(response: Response, data:Post_EmailVeri):
+async def EmailVeri(response: Response, data:details):
     otp=send_email(data.email)
     if(otp!=None):
         return {"msg":"Successful","otp":otp}
@@ -118,10 +102,14 @@ async def EmailVeri(response: Response, data:Post_EmailVeri):
     pass
 
 @app.post("/SignUp")
-async def SignUp(response: Response ,data:Post_SignUp):
+async def SignUp(response: Response ,data:details):
     db=database()
     try:
         con=db.cursor()
+        query=f"select * from user_detail where email='{data.email}'"
+        con.execute(query)
+        row=con.fetchone()
+        print(row)
         query=f"insert into user_detail(name,email,password) values('{data.name}','{data.email}','{data.password}');"
         con.execute(query)
         db.commit()
@@ -135,10 +123,27 @@ async def SignUp(response: Response ,data:Post_SignUp):
         con.close()
     pass
 
-
+@app.post("/EmailCheck")
+async def EmailCheck(response: Response,data:details):
+    db=database()
+    try:
+        con=db.cursor()
+        query=f"select * from user_detail where email='{data.email}'"
+        con.execute(query)
+        row=con.fetchone()
+        print(row)
+        if row is not None:
+            response.status_code = status.HTTP_403_FORBIDDEN
+    except Exception as e:
+        print(e)
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        # return {"status":"500","msg":"Internal Server Error"}
+    finally:
+        con.close()
+    pass
 
 @app.post("/ResetPass")
-async def Reset_pass(response: Response ,data:Update_detail):
+async def Reset_pass(response: Response ,data:details):
     db=database()
     try:
         con=db.cursor()
