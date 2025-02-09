@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:docguru/Animation/login-register.dart';
+// import 'package:docguru/Animation/login-register.dart';
 import 'package:docguru/PAGE/SignIn.dart';
-import 'package:docguru/PAGE/rename_it.dart';
+// import 'package:docguru/PAGE/rename_it.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -37,7 +37,7 @@ class _NewpassState extends State<Newpass> {
 
         var Jres = await jsonDecode(res.body);
         print(Jres);
-        if (Jres["status"] == "200") {
+        if (res.statusCode == 200) {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => SignIn()));
         }
@@ -117,7 +117,7 @@ class _NewpassState extends State<Newpass> {
                           final passwordRegex = RegExp(
                               r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$');
                           if (!passwordRegex.hasMatch(value)) {
-                            return 'Password must be \n\t - atleast 8 characters long, \n\t - include one uppercase letter, \n\t - one lowercase letter, and one number';
+                            return 'Password must be \n\t - atleast 8 characters long, \n\t - no special symbols, \n\t - include one uppercase letter, \n\t - one lowercase letter, and one number';
                           }
                           return null;
                         },

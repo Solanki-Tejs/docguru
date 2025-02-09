@@ -1,4 +1,4 @@
-from fastapi import FastAPI,HTTPException
+from fastapi import FastAPI, Response, status
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from database import database
@@ -78,7 +78,7 @@ def send_email(to_mail):
     pass
 
 @app.post("/SignIn")
-async def SignIn(data:Post_SignIn):
+async def SignIn(response: Response, data:Post_SignIn):
     db=database()
     
     try:
@@ -88,33 +88,37 @@ async def SignIn(data:Post_SignIn):
         row=con.fetchone()
         print(row)
         if row == None:
-            return {"status":"404","msg":"user not found"}
+            response.status_code = status.HTTP_404_NOT_FOUND
+            # return {"status":"404","msg":"user not found"}
         else:
             row={"id":row[0],"name":row[1],"email":row[2],"password":row[3]}
             token=create_jwt(data.email)
             if(data.password==row["password"]):
-                return {"status":"200","msg":"Successful","token":token}
+                return {"msg":"Successful","token":token}
             else:
                 print("hello")
-                return {"status":"403","msg":"Password dont match"}
+                response.status_code = status.HTTP_403_FORBIDDEN
+                # return {"status":"403","msg":"Password dont match"}
     except Exception as e:
-        print(e)   
-        return {"status":"500","msg":"Internal Server Error"}
+        print(e)
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        # return {"status":"500","msg":"Internal Server Error"}
     finally:
         con.close()
     pass
 
 @app.post("/EmailVeri")
-async def EmailVeri(data:Post_EmailVeri):
+async def EmailVeri(response: Response, data:Post_EmailVeri):
     otp=send_email(data.email)
     if(otp!=None):
-        return {"status":"200","msg":"Successful","otp":otp}
+        return {"msg":"Successful","otp":otp}
     else:
-        return {"status":"403","msg":"Unsuccessful"}
+        response.status_code = status.HTTP_403_FORBIDDEN
+        # return {"status":"403","msg":"Unsuccessful"}
     pass
 
 @app.post("/SignUp")
-async def SignUp(data:Post_SignUp):
+async def SignUp(response: Response ,data:Post_SignUp):
     db=database()
     try:
         con=db.cursor()
@@ -122,10 +126,11 @@ async def SignUp(data:Post_SignUp):
         con.execute(query)
         db.commit()
         token=create_jwt(data.email)
-        return {"status":"200","msg":"Successful","token":token}
+        return {"msg":"Successful","token":token}
     except Exception as e:
-        print(e)   
-        return {"status":"500","msg":"Internal Server Error"}
+        print(e) 
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR  
+        # return {"status":"500","msg":"Internal Server Error"}
     finally:
         con.close()
     pass
@@ -133,17 +138,18 @@ async def SignUp(data:Post_SignUp):
 
 
 @app.post("/ResetPass")
-async def Reset_pass(data:Update_detail):
+async def Reset_pass(response: Response ,data:Update_detail):
     db=database()
     try:
         con=db.cursor()
         query=f"UPDATE user_detail SET password='{data.password}' WHERE email='{data.email}'"
         con.execute(query)
         db.commit()
-        return {"status":"200","msg":"Successful"}
+        return {"msg":"Successfully reset your password"}
     except Exception as e:
-        print(e)   
-        return {"status":"500","msg":"Internal Server Error"}
+        print(e)
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        # return {"status":"500","msg":"Internal Server Error"}
     finally:
         con.close()
     pass

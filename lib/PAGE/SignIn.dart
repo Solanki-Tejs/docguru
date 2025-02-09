@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:docguru/Animation/login-register.dart';
 import 'package:docguru/PAGE/Home.dart';
 import 'package:docguru/PAGE/forgetpass.dart';
-import 'package:docguru/PAGE/rename_it.dart';
+// import 'package:docguru/PAGE/rename_it.dart';
 import 'package:flutter/material.dart';
 import 'package:docguru/PAGE/SignUp.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -42,9 +42,9 @@ class _SignInState extends State<SignIn> {
           body: jsonEncode(data));
 
       var Jres = await jsonDecode(res.body);
-      print(Jres['status']);
+      print(res.statusCode);
 
-      if (Jres["status"] == "200") {
+      if (res.statusCode == 200) {
         print("hello world!");
         prefs.setString("token", Jres["token"]);
         Navigator.pushReplacement(
@@ -169,7 +169,7 @@ class _SignInState extends State<SignIn> {
                           final passwordRegex = RegExp(
                               r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$');
                           if (!passwordRegex.hasMatch(value)) {
-                            return 'Password must be \n\t - atleast 8 characters long, \n\t - include one uppercase letter, \n\t - one lowercase letter, and one number';
+                            return 'Password must be \n\t - atleast 8 characters long, \n\t - no special symbols, \n\t - include one uppercase letter, \n\t - one lowercase letter, and one number';
                           }
                           return null;
                         },

@@ -149,7 +149,7 @@ class _SignUpState extends State<SignUp> {
                           final passwordRegex = RegExp(
                               r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$');
                           if (!passwordRegex.hasMatch(value)) {
-                            return 'Password must be \n\t - atleast 8 characters long, \n\t - include one uppercase letter, \n\t - one lowercase letter, and one number';
+                            return 'Password must be \n\t - atleast 8 characters long, \n\t - no special symbols, \n\t - include one uppercase letter, \n\t - one lowercase letter, and one number';
                           }
                           return null;
                         },

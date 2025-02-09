@@ -59,8 +59,9 @@ class _EmailVeriState extends State<EmailVeri> {
       var res = await http.post(Uri.parse(url),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode(data));
+
       var Jres = jsonDecode(res.body);
-      if (Jres["status"] == "200") {
+      if (res.statusCode == 200) {
         print("hello world!");
         prefs.setString("token", Jres["token"]);
         Navigator.pushReplacement(
@@ -84,7 +85,7 @@ class _EmailVeriState extends State<EmailVeri> {
         headers: {"Content-Type": "application/json"}, body: jsonEncode(data));
     print(res.body);
     var Jres = await jsonDecode(res.body);
-    if (Jres["status"] == "200") {
+    if (res.statusCode == 200) {
       send_otp = Jres["otp"];
     }
   }
