@@ -5,6 +5,8 @@ mysql> create database docguru;
 table:
 user_detail:mysql> create table user_detail(uid int AUTO_INCREMENT,name varchar(30),email varchar(80),password varchar(20),PRIMARY KEY (uid));
 
+pdf_detail>
+CREATE TABLE pdf_detail (pdf_id INT AUTO_INCREMENT,ui INT,name VARCHAR(30),timedate DATETIME DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (pdf_id));
 
 
 

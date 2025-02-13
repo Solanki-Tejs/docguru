@@ -2,6 +2,7 @@
 
 import 'package:docguru/PAGE/Home.dart';
 import 'package:docguru/PAGE/SignIn.dart';
+import 'package:docguru/PAGE/UploadFile.dart';
 import 'package:docguru/PAGE/email_veri.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -12,8 +13,8 @@ void main() async {
     debugShowCheckedModeBanner: false,
     home: SafeArea(
       top: true,
-      // child: Home(),
       child: SignIn(),
+      // child: UploadFile(),
     ),
   ));
 }
