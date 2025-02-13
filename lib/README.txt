@@ -8,7 +8,8 @@ user_detail:mysql> create table user_detail(uid int AUTO_INCREMENT,name varchar(
 pdf_detail>
 CREATE TABLE pdf_detail (pdf_id INT AUTO_INCREMENT,ui INT,name VARCHAR(30),timedate DATETIME DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (pdf_id));
 
-
+pdf_detail>
+CREATE TABLE pdf_detail (pdf_id INT AUTO_INCREMENT,ui INT,name VARCHAR(30),timedate DATETIME DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (pdf_id));
 
 requirements.txt
 
