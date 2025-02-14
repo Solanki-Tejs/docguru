@@ -176,10 +176,8 @@ class _UploadFileState extends State<UploadFile> {
     });
 
     // Open file picker and allow user to select a PDF file
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-        // type: FileType.custom
-
-        );
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
 
     // Hide the loader once the file picker is done
     setState(() {
@@ -213,7 +211,7 @@ class _UploadFileState extends State<UploadFile> {
     // Create a FormData object to send the file
     FormData formData = FormData.fromMap({
       'file': await MultipartFile.fromFile(file.path, filename: fileName),
-      'token':prefs.getString("token")
+      'token': prefs.getString("token")
     });
 
     setState(() {

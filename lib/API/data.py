@@ -51,6 +51,7 @@ def decode_jwt(token):
 
 def fatch_id(email):
     db=database()
+    print(email)
     try:
         con=db.cursor()
         query=f"select * from user_detail where email='{email}'"
