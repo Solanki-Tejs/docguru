@@ -225,12 +225,12 @@ class _UploadFileState extends State<UploadFile> {
 
     try {
       await dio.post(
-        url, // Replace with your server URL
+        url, 
         data: formData,
         onSendProgress: (sent, total) {
           if (total != -1) {
             setState(() {
-              _progress = sent / total; // Calculate the upload progress
+              _progress = sent / total;
             });
 
             // Calculate transfer speed
@@ -240,8 +240,8 @@ class _UploadFileState extends State<UploadFile> {
 
             if (timeTaken > 0) {
               double speed = bytesTransferred /
-                  (timeTaken / 1000.0); // speed in bytes per second
-              speedInMBps = speed / (1024 * 1024); // speed in KBps
+                  (timeTaken / 1000.0);
+              speedInMBps = speed / (1024 * 1024); 
               print('Speed: ${speedInMBps.toStringAsFixed(2)} MB/s');
             }
           }
@@ -278,12 +278,11 @@ class _UploadFileState extends State<UploadFile> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Show loader if file is being picked
             if (_isFilePicking)
               CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
-            // Progress bar if file is uploading
+
             if (_isUploading)
               Column(
                 children: [
