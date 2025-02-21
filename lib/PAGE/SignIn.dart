@@ -49,7 +49,7 @@ class _SignInState extends State<SignIn> {
         print("hello world!");
         prefs.setString("token", Jres["token"]);
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => UploadFile()));
+            context, MaterialPageRoute(builder: (context) => Home()));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Detail dont match'),
