@@ -1,5 +1,6 @@
 // ignore_for_file: sort_child_properties_last, prefer_const_constructors, avoid_print, prefer_interpolation_to_compose_strings, file_names, camel_case_types
 
+import 'package:docguru/PAGE/ChatPage.dart';
 import 'package:docguru/PAGE/Home.dart';
 import 'package:docguru/PAGE/SignIn.dart';
 import 'package:docguru/PAGE/UploadFile.dart';
@@ -13,7 +14,7 @@ void main() async {
     debugShowCheckedModeBanner: false,
     home: SafeArea(
       top: true,
-      child: SignIn(),
+      child: Home(),
       // child: UploadFile(),
     ),
   ));

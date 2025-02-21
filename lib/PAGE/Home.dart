@@ -2,6 +2,7 @@
 
 import 'dart:ui';
 
+import 'package:docguru/PAGE/ChatPage.dart';
 import 'package:docguru/PAGE/SignIn.dart';
 import 'package:docguru/PAGE/setting.dart';
 import 'package:flutter/material.dart';
@@ -136,38 +137,6 @@ class _HomeState extends State<Home> {
             ),
           ),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      // controller: _controller,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                        hintText: 'Type a message...',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        suffixIcon: GestureDetector(
-                          child: IconButton(
-                              icon: Icon(Icons.send),
-                              onPressed: () {
-                                print("send");
-                              }),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ));
+        body: ChatPage());
   }
 }
