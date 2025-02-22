@@ -1,11 +1,12 @@
 from fastapi import FastAPI, Response, status,File, UploadFile,Form
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 from database import database
-from typing import List,Optional
+from typing import List,Optional,Dict
 from dotenv import load_dotenv
 from email.message import EmailMessage
-import jwt,os,random,smtplib,shutil
+import jwt,os,random,smtplib,shutil,requests,json,time
 
 app=FastAPI()
 load_dotenv()
@@ -14,6 +15,7 @@ key=os.getenv("key")
 algorithm=os.getenv("algorithm")
 from_email=os.getenv("EMAIL")
 UploadDirectory = os.getenv("uploads")
+URL=os.getenv("URL")
 
 
 app.add_middleware(
@@ -29,6 +31,7 @@ class details(BaseModel):
     email:Optional[str]=None
     password:Optional[str]=None
     token:Optional[str]=None 
+    message: Optional[str]=None
     pass
 
 if not os.path.exists(UploadDirectory):
@@ -51,7 +54,6 @@ def decode_jwt(token):
 
 def fatch_id(email):
     db=database()
-    print(email)
     try:
         con=db.cursor()
         query=f"select * from user_detail where email='{email}'"
@@ -225,6 +227,32 @@ async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile =
         response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
         return {"message": "File uploaded was not successfully"}
     pass 
+
+async def stream_answer(message: str):
+    data = {
+        'model': 'llama3',
+        'prompt': message,
+        'stream': True  # Important: Ensure the API streams the response
+    }
+
+    with requests.post(URL, json=data, stream=True) as r:
+        for line in r.iter_lines():
+            if line:
+                try:
+                    response_json = json.loads(line)
+                    yield response_json.get("response", "")  # Send each chunk as received
+                    time.sleep(0.05)  # Optional delay for better UX
+                except json.JSONDecodeError:
+                    continue
+
+
+@app.post("/chat")
+async def chat(request: details):
+    if not request.message:
+        response.status_code = status.HTTP_400_BAD_REQUEST
+    
+    return StreamingResponse(stream_answer(request.message), media_type="text/plain")
+
 
 @app.get("/")
 def main():

@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http:
+  http: ^1.0.2
   flutter_dotenv: ^5.0.2
   shared_preferences:
   pinput: ^5.0.1

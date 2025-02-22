@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class ChatMessage {
   final String text;
@@ -21,6 +24,8 @@ class ChatMessage {
       );
 }
 
+
+
 class ChatPage extends StatefulWidget {
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -29,7 +34,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   final List<ChatMessage> _messages = [];
   final TextEditingController _controller = TextEditingController();
-  final String _apiUrl = 'http://127.0.0.1:8000/chat'; // Adjust if needed
+  final String _apiUrl = dotenv.env['URL']! + "chat"; // Adjust IP/port if needed
 
   @override
   void initState() {
@@ -37,8 +42,10 @@ class _ChatPageState extends State<ChatPage> {
     _loadChatHistory();
   }
 
+  /// Returns a key for the chat history based on the current account's token.
   Future<String> _getChatHistoryKey() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    // Token should be set at login; if missing, default is used.
     String token = prefs.getString("token") ?? "default";
     return "chat_history_$token";
   }
@@ -68,13 +75,14 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> _sendMessage(String text) async {
     if (text.isEmpty) return;
 
+    // Insert user message.
     setState(() {
       _messages.insert(0, ChatMessage(text: text, isUser: true));
-      _messages.insert(0, ChatMessage(text: "", isUser: false)); // Empty bot response placeholder
     });
     _controller.clear();
     _saveChatHistory();
 
+    // Start timer to measure response time.
     final startTime = DateTime.now();
 
     try {
@@ -86,26 +94,28 @@ class _ChatPageState extends State<ChatPage> {
 
       if (response.statusCode == 200) {
         String reply = "";
-        int botMessageIndex = 0;
-
-        // Transform response stream to listen to the response as characters
+        // Listen to the stream and update the UI as data arrives.
         response.stream.transform(utf8.decoder).listen((chunk) {
-          for (int i = 0; i < chunk.length; i++) {
-            reply += chunk[i];  // Append each character
-
-            // Delay the update for each letter
-            Future.delayed(Duration(milliseconds: 50 * (i + 1)), () {
-              setState(() {
-                _messages[botMessageIndex] = ChatMessage(text: reply, isUser: false);
-              });
-            });
-          }
+           print("Received chunk: $chunk");
+          setState(() {
+            reply += chunk;
+            // If there's no previous bot reply, insert one.
+            if (_messages.isEmpty || _messages.first.isUser) {
+              _messages.insert(0, ChatMessage(text: reply, isUser: false));
+            } else {
+              // Update the existing bot message.
+              _messages[0] = ChatMessage(text: reply, isUser: false);
+            }
+          });
         }, onDone: () {
+          print("Stream finished");
+          // Calculate elapsed time when the stream is finished.
           final elapsed = DateTime.now().difference(startTime);
           setState(() {
-            _messages[botMessageIndex] = ChatMessage(
-                text: "${_messages[botMessageIndex].text}\n\nResponse Time: ${elapsed.inMilliseconds} ms",
-                isUser: false);
+            // Append response time to the end of the message.
+            String finalText =
+                "${_messages[0].text}\n\nResponse Time: ${elapsed.inMilliseconds} ms";
+            _messages[0] = ChatMessage(text: finalText, isUser: false);
           });
           _saveChatHistory();
         });
@@ -146,7 +156,8 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(225, 7, 7, 27),
+       backgroundColor: Color.fromARGB(225, 7, 7, 27),
+      // appBar: AppBar(title: const Text("PDF Chat")),
       body: Column(
         children: [
           Expanded(
@@ -167,16 +178,15 @@ class _ChatPageState extends State<ChatPage> {
                     controller: _controller,
                     minLines: 1,
                     maxLines: 8,
-                    style: TextStyle(color: Colors.white),
+                     style: TextStyle(color: Colors.white),
                     decoration: InputDecoration.collapsed(
-                      hintText: "Type your message",
-                      hintStyle: TextStyle(color: Colors.white70),
-                    ),
+                        hintText: "Type your message",
+                        hintStyle: TextStyle(color: Colors.white70),),
                     onSubmitted: _sendMessage,
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send, color: Colors.white),
+                  icon: Icon(Icons.send,color: Colors.white),
                   onPressed: () => _sendMessage(_controller.text),
                 )
               ],
