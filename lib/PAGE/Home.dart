@@ -644,13 +644,144 @@
 //   }
 // }
 
-import 'dart:ui';
+// import 'dart:ui';
+// import 'package:flutter/material.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:docguru/PAGE/ChatPage.dart';
+// import 'package:docguru/PAGE/SignIn.dart';
+// import 'package:docguru/PAGE/UploadFile.dart';
+// import 'package:docguru/PAGE/setting.dart';
+
+// class Home extends StatefulWidget {
+//   const Home({super.key});
+
+//   @override
+//   State<Home> createState() => _HomeState();
+// }
+
+// class _HomeState extends State<Home> {
+//   bool pdfUploaded = false;
+//   String? pdfName;
+//   List<String> pdfList = []; // List for multiple PDFs
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     checkPdfStatus();
+//   }
+
+//   Future<void> checkPdfStatus() async {
+//     SharedPreferences pref = await SharedPreferences.getInstance();
+//     setState(() {
+//       pdfUploaded = pref.getBool("pdfUploaded") ?? false;
+//       pdfName = pref.getString("pdfName") ?? "No PDF uploaded";
+//       pdfList = pref.getStringList("pdfList") ?? [];
+//     });
+//   }
+
+//   Future<void> logout() async {
+//     SharedPreferences pref = await SharedPreferences.getInstance();
+//     await pref.clear();
+//     Navigator.pushAndRemoveUntil(
+//       context,
+//       MaterialPageRoute(builder: (context) => const SignIn()),
+//       (Route) => false,
+//     );
+//   }
+
+//   void uploadAnotherPDF() async {
+//     SharedPreferences pref = await SharedPreferences.getInstance();
+//     await pref.setBool("pdfUploaded", false);
+//     await pref.remove("pdfName");
+
+//     Navigator.push(
+//       context,
+//       MaterialPageRoute(builder: (context) => UploadFile()),
+//     ).then((_) async {
+//       SharedPreferences pref = await SharedPreferences.getInstance();
+//       String? newPdfName = pref.getString("pdfName");
+//       if (newPdfName != null && !pdfList.contains(newPdfName)) {
+//         pdfList.add(newPdfName);
+//         await pref.setStringList("pdfList", pdfList);
+//       }
+//       checkPdfStatus();
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final Size size = MediaQuery.sizeOf(context);
+//     double scrwidth = size.width;
+
+//     return Scaffold(
+//       backgroundColor: const Color.fromARGB(225, 7, 7, 27),
+//       appBar: AppBar(
+//         foregroundColor: Colors.white,
+//         backgroundColor: Colors.transparent,
+//         title: const Text(
+//           "DocGuru",
+//           style: TextStyle(color: Colors.white),
+//         ),
+//       ),
+//       drawer: Drawer(
+//         width: scrwidth / 1.2,
+//         backgroundColor: Colors.transparent,
+//         child: BackdropFilter(
+//           filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+//           child: Container(
+//             color: const Color.fromARGB(255, 64, 63, 63).withOpacity(0.3),
+//             child: ListView(
+//               children: [
+//                 DrawerHeader(
+//                   decoration:
+//                       const BoxDecoration(color: Colors.deepPurpleAccent),
+//                   child: Text(
+//                     pdfName ?? "No PDF uploaded",
+//                     style: const TextStyle(color: Colors.white, fontSize: 18),
+//                   ),
+//                 ),
+//                 ...pdfList.map((pdf) => ListTile(
+//                       splashColor: Colors.deepPurpleAccent,
+//                       leading: const Icon(Icons.description_outlined,
+//                           color: Colors.white),
+//                       title: Text(pdf,
+//                           style: const TextStyle(color: Colors.white)),
+//                       onTap: () {},
+//                     )),
+//                 const Divider(color: Colors.white70, thickness: 0.5),
+//                 ListTile(
+//                   leading: const Icon(Icons.upload_file, color: Colors.white),
+//                   title: const Text('Upload PDF',
+//                       style: TextStyle(color: Colors.white)),
+//                   onTap: uploadAnotherPDF,
+//                 ),
+//                 ListTile(
+//                   leading: const Icon(Icons.settings, color: Colors.white),
+//                   title: const Text('Settings',
+//                       style: TextStyle(color: Colors.white)),
+//                   onTap: () => Navigator.push(context,
+//                       MaterialPageRoute(builder: (context) => Setting())),
+//                 ),
+//                 ListTile(
+//                   leading: const Icon(Icons.logout, color: Colors.white),
+//                   title: const Text('Log Out',
+//                       style: TextStyle(color: Colors.white)),
+//                   onTap: logout,
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//       body: pdfUploaded ? ChatPage() : UploadFile(),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:docguru/PAGE/ChatPage.dart';
-import 'package:docguru/PAGE/SignIn.dart';
 import 'package:docguru/PAGE/UploadFile.dart';
-import 'package:docguru/PAGE/setting.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -660,120 +791,174 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  bool pdfUploaded = false;
-  String? pdfName;
-  List<String> pdfList = []; // List for multiple PDFs
+  List<String> pageNames = [];
+  List<String> CollactionNames = [];
+  List<List<String>> chatMessages = [];
+  List<bool> uploadStatuses = [];
+  int currentPageIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    checkPdfStatus();
+    loadPages();
   }
 
-  Future<void> checkPdfStatus() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
+  // Loading pages and chat messages from SharedPreferences
+  Future<void> loadPages() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int pageCount = prefs.getInt('page_count') ?? 0;
+    List<String> loadedPageNames = [];
+    List<String> loadedCollactionNames = [];
+    List<bool> loadedUploadStatuses = [];
+    List<List<String>> loadedChatMessages = [];
+
+    for (int i = 0; i < pageCount; i++) {
+      loadedCollactionNames.add(prefs.getString('CollactionNames_${i}_name') ??
+          "CollactionNames ${i + 1}");
+      loadedPageNames.add(prefs.getString('page_${i}_name') ?? "Page ${i + 1}");
+      
+      loadedUploadStatuses
+          .add(prefs.getBool('page_${i}_upload_status') ?? false);
+      loadedChatMessages.add(prefs.getStringList('page_${i}_messages') ??
+          []); // Loading the chat messages
+    }
+
     setState(() {
-      pdfUploaded = pref.getBool("pdfUploaded") ?? false;
-      pdfName = pref.getString("pdfName") ?? "No PDF uploaded";
-      pdfList = pref.getStringList("pdfList") ?? [];
+      CollactionNames = loadedCollactionNames;
+      pageNames = loadedPageNames;
+
+      uploadStatuses = loadedUploadStatuses;
+      chatMessages = loadedChatMessages;
+      currentPageIndex = pageNames.isEmpty ? 0 : currentPageIndex;
     });
   }
 
-  Future<void> logout() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.clear();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => const SignIn()),
-      (Route) => false,
-    );
+  // Add a new page and initialize chat messages
+  void addPage() {
+    setState(() {
+      CollactionNames.add("CollactionNames ${CollactionNames.length + 1}");
+      pageNames.add("Page ${pageNames.length + 1}");
+
+      uploadStatuses.add(false);
+      chatMessages.add([]); // Initialize empty chat messages for the new page
+      currentPageIndex = pageNames.length - 1; // Switch to the new page
+      savePages();
+    });
   }
 
-  void uploadAnotherPDF() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setBool("pdfUploaded", false);
-    await pref.remove("pdfName");
+  // Save pages and chat messages to SharedPreferences
+  void savePages() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('page_count', pageNames.length);
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => UploadFile()),
-    ).then((_) async {
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      String? newPdfName = pref.getString("pdfName");
-      if (newPdfName != null && !pdfList.contains(newPdfName)) {
-        pdfList.add(newPdfName);
-        await pref.setStringList("pdfList", pdfList);
-      }
-      checkPdfStatus();
+    for (int i = 0; i < pageNames.length; i++) {
+      prefs.setString('page_${i}_name', pageNames[i]);
+      prefs.setString('CollactionNames_${i}_name', CollactionNames[i]);
+      prefs.setBool('page_${i}_upload_status', uploadStatuses[i]);
+      prefs.setStringList(
+          'page_${i}_messages', chatMessages[i]); // Save chat messages
+    }
+  }
+
+  // Switch between pages
+  void switchPage(int index) {
+    setState(() {
+      currentPageIndex = index;
     });
+  }
+
+  // Update chat messages for the current page
+  void addMessage(int pageIndex, String message) {
+    setState(() {
+      chatMessages[pageIndex].add(message);
+    });
+    savePages(); // Save after adding message
+  }
+
+  // Toggle upload status for the current page
+  void toggleUploadStatus(int pageIndex) {
+    setState(() {
+      uploadStatuses[pageIndex] = !uploadStatuses[pageIndex];
+    });
+    savePages();
+  }
+
+  // Set the page name
+  void setPageName(int pageIndex, String name, String Filename) {
+    setState(() {
+      CollactionNames[pageIndex] = Filename;
+      pageNames[pageIndex] = name;
+      print(CollactionNames);
+    });
+    savePages();
   }
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.sizeOf(context);
-    double scrwidth = size.width;
-
     return Scaffold(
-      backgroundColor: const Color.fromARGB(225, 7, 7, 27),
+      backgroundColor: Color.fromARGB(225, 7, 7, 27),
       appBar: AppBar(
         foregroundColor: Colors.white,
         backgroundColor: Colors.transparent,
-        title: const Text(
-          "DocGuru",
-          style: TextStyle(color: Colors.white),
-        ),
+        title: const Text("DocGuru", style: TextStyle(color: Colors.white)),
       ),
       drawer: Drawer(
-        width: scrwidth / 1.2,
-        backgroundColor: Colors.transparent,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          child: Container(
-            color: const Color.fromARGB(255, 64, 63, 63).withOpacity(0.3),
-            child: ListView(
-              children: [
-                DrawerHeader(
-                  decoration:
-                      const BoxDecoration(color: Colors.deepPurpleAccent),
-                  child: Text(
-                    pdfName ?? "No PDF uploaded",
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
-                ...pdfList.map((pdf) => ListTile(
-                      splashColor: Colors.deepPurpleAccent,
-                      leading: const Icon(Icons.description_outlined,
-                          color: Colors.white),
-                      title: Text(pdf,
-                          style: const TextStyle(color: Colors.white)),
-                      onTap: () {},
-                    )),
-                const Divider(color: Colors.white70, thickness: 0.5),
-                ListTile(
-                  leading: const Icon(Icons.upload_file, color: Colors.white),
-                  title: const Text('Upload PDF',
-                      style: TextStyle(color: Colors.white)),
-                  onTap: uploadAnotherPDF,
-                ),
-                ListTile(
-                  leading: const Icon(Icons.settings, color: Colors.white),
-                  title: const Text('Settings',
-                      style: TextStyle(color: Colors.white)),
-                  onTap: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Setting())),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.white),
-                  title: const Text('Log Out',
-                      style: TextStyle(color: Colors.white)),
-                  onTap: logout,
-                ),
-              ],
+        child: ListView(
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(color: Colors.deepPurpleAccent),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text("DocGuru", style: TextStyle(color: Colors.white)),
+              ),
             ),
-          ),
+            // List of pages
+            for (int i = 0; i < pageNames.length; i++)
+              ListTile(
+                title: Text(pageNames[i]),
+                onTap: () {
+                  switchPage(i);
+                  Navigator.pop(context); // Close the drawer
+                },
+              ),
+            ListTile(
+              leading: Icon(Icons.add),
+              title: Text("Add Page"),
+              onTap: () {
+                addPage();
+                Navigator.pop(context); // Close the drawer
+              },
+            ),
+          ],
         ),
       ),
-      body: pdfUploaded ? ChatPage() : UploadFile(),
+      body: Builder(
+        builder: (context) {
+          // Display the current page, with upload status checked
+          return pageNames.isEmpty
+              ? Center(
+                  child:
+                      Text("No Pages Created", style: TextStyle(fontSize: 24)))
+              : uploadStatuses[currentPageIndex]
+                  ? ChatPage(
+                      pageIndex: currentPageIndex,
+                      messages: chatMessages[currentPageIndex],
+                      onMessagesUpdated: (updatedMessages) {
+                        setState(() {
+                          chatMessages[currentPageIndex] = updatedMessages;
+                        });
+                        savePages(); // Save updated messages
+                      },
+                    ) // Chat page if upload is complete
+                  : UploadFile(
+                      toggleUploadStatus: () =>
+                          toggleUploadStatus(currentPageIndex),
+                      pageIndex: currentPageIndex,
+                      onNameChange: (name, Filename) =>
+                          setPageName(currentPageIndex, name, Filename),
+                    ); // Upload page otherwise
+        },
+      ),
     );
   }
 }

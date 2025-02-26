@@ -26,8 +26,8 @@ def chunks_embedding(chunks, db):
     db.add_documents(chunks)
 
 
-def retriving(db):
-    retriver = db.as_retriver()
-    response = retriver.invoke()
+def retriving(db, message):
+    retriver = db.as_retriever()
+    response = retriver.invoke(message)
     return response
     

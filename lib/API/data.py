@@ -33,6 +33,7 @@ class details(BaseModel):
     password:Optional[str]=None
     token:Optional[str]=None 
     message: Optional[str]=None
+    collactionName: Optional[str]=None
     pass
 
 if not os.path.exists(UploadDirectory):
@@ -247,7 +248,7 @@ async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile =
         db = vector_init(collection_name, vectorDB_loc)
         chunks_embedding(chunks, db)  
         insert_embedding_details(collection_name,uid,pdfid)
-        return {"message": "File uploaded successfully"}
+        return {"message": "File uploaded successfully","collactionName":collection_name}
     except Exception as e:
         # Handle any errors
         print(e)
@@ -278,6 +279,13 @@ async def stream_answer(message: str):
                     continue
 
 
+def returnChunks(collection_name, message):
+    # collection_name = (f"pdf{pdfid}_"+f"ui{uid}")
+    vectorDB_loc = f"{18}"
+    db = vector_init(collection_name, "18")
+    response = retriving(db, message)
+    return response
+
 @app.post("/chat")
 async def chat(request: details):
     
@@ -286,12 +294,20 @@ async def chat(request: details):
     
     
     # hello ? 7
-    
+    print(request.collactionName)
     if not request.message:
         response.status_code = status.HTTP_400_BAD_REQUEST
     
     # return StreamingResponse(stream_answer(request.message), media_type="text/plain")
-    return "hello"
+    # return "hello"
+    
+    collectionName = request.collactionName
+    message = request.message
+    
+    response = returnChunks(collectionName, message)
+    print('response_chunks = ', response)
+    return response
+    # return StreamingResponse(stream_answer(response), media_type="text/plain")
 
 
 @app.get("/")

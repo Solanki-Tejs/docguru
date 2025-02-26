@@ -330,9 +330,178 @@
 //   }
 // }
 
+// import 'dart:io';
+// import 'package:dio/dio.dart';
+// import 'package:docguru/PAGE/ChatPage.dart';
+// import 'package:docguru/PAGE/Home.dart';
+// import 'package:file_picker/file_picker.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_dotenv/flutter_dotenv.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
+
+// class UploadFile extends StatefulWidget {
+//   const UploadFile({super.key});
+
+//   @override
+//   State<UploadFile> createState() => _UploadFileState();
+// }
+
+// class _UploadFileState extends State<UploadFile> {
+//   double _progress = 0.0;
+//   bool _isUploading = false;
+//   bool _isFilePicking = false;
+//   double speedInMBps = 0.0;
+
+//   Future<void> pickAndUploadPDF() async {
+//     setState(() {
+//       _isFilePicking = true;
+//     });
+
+//     FilePickerResult? result = await FilePicker.platform
+//         .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+
+//     setState(() {
+//       _isFilePicking = false;
+//     });
+
+//     if (result != null) {
+//       String? filePath = result.files.single.path;
+
+//       if (filePath != null) {
+//         print('PDF file selected: $filePath');
+//         await uploadPDF(filePath);
+//       }
+//     } else {
+//       print('No file selected');
+//     }
+//   }
+
+//   Future<void> uploadPDF(String filePath) async {
+//     Dio dio = Dio();
+//     File file = File(filePath);
+//     String fileName = file.path.split('/').last;
+//     var url = dotenv.env['URL']! + "UploadPdf";
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+//     FormData formData = FormData.fromMap({
+//       'file': await MultipartFile.fromFile(file.path, filename: fileName),
+//       'token': prefs.getString("token")
+//     });
+
+//     List<String> uploadedFiles = prefs.getStringList("uploadedFiles") ?? [];
+//     uploadedFiles.add(fileName);
+//     await prefs.setStringList("uploadedFiles", uploadedFiles);
+
+//     setState(() {
+//       _isUploading = true;
+//       _progress = 0.0;
+//       speedInMBps = 0.0;
+//     });
+
+//     int lastTime = DateTime.now().millisecondsSinceEpoch;
+//     int totalBytesSend = 0;
+
+//     try {
+//       await dio.post(
+//         url,
+//         data: formData,
+//         onSendProgress: (sent, total) {
+//           if (total != -1) {
+//             setState(() {
+//               _progress = sent / total;
+//             });
+
+//             int currentTime = DateTime.now().millisecondsSinceEpoch;
+//             int bytesTransferred = sent - totalBytesSend;
+//             int timeTaken = currentTime - lastTime;
+
+//             if (timeTaken > 0) {
+//               double speed = bytesTransferred / (timeTaken / 1000.0);
+//               speedInMBps = speed / (1024 * 1024);
+//               print('Speed: ${speedInMBps.toStringAsFixed(2)} MB/s');
+//             }
+//           }
+//         },
+//       );
+
+//       setState(() {
+//         _isUploading = false;
+//       });
+//       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+//         content: Text('File uploaded successfully'),
+//         backgroundColor: Colors.green,
+//       ));
+//       print('File uploaded successfully');
+//       Navigator.pushReplacement(
+//           context, MaterialPageRoute(builder: (context) => Home()));
+//     } catch (e) {
+//       setState(() {
+//         _isUploading = false;
+//       });
+//       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+//         content: Text('Error while uploading file,Try again'),
+//         backgroundColor: Colors.red,
+//       ));
+//       print('Error uploading file: $e');
+//     } finally {
+//       dio.close();
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: Color.fromARGB(225, 7, 7, 27),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             if (_isFilePicking)
+//               CircularProgressIndicator(
+//                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+//               ),
+//             if (_isUploading)
+//               Column(
+//                 children: [
+//                   LinearProgressIndicator(value: _progress),
+//                   SizedBox(height: 20),
+//                   Text(
+//                     'Uploading... ${(_progress * 100).toStringAsFixed(0)}% \n Speed ${speedInMBps.toStringAsFixed(2)} MB/s ',
+//                     style: TextStyle(fontSize: 18, color: Colors.white),
+//                   ),
+//                 ],
+//               ),
+//             if (!_isUploading && !_isFilePicking)
+//               ElevatedButton.icon(
+//                 icon: Icon(
+//                   Icons.upload,
+//                   color: Colors.white,
+//                 ),
+//                 label: Text(
+//                   'Upload PDF',
+//                   style: TextStyle(color: Colors.white),
+//                 ),
+//                 onPressed: () {
+//                   pickAndUploadPDF();
+//                 },
+//                 style: ButtonStyle(
+//                     backgroundColor: MaterialStateProperty.all<Color>(
+//                         Colors.deepPurpleAccent),
+//                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+//                         RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(10.0),
+//                     ))),
+//               ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:docguru/PAGE/ChatPage.dart';
 import 'package:docguru/PAGE/Home.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -340,26 +509,38 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UploadFile extends StatefulWidget {
-  const UploadFile({super.key});
+  final Function toggleUploadStatus;
+  final int pageIndex;
+  final Function(String, String) onNameChange;
+
+  const UploadFile(
+      {super.key,
+      required this.toggleUploadStatus,
+      required this.pageIndex,
+      required this.onNameChange});
 
   @override
   State<UploadFile> createState() => _UploadFileState();
 }
 
 class _UploadFileState extends State<UploadFile> {
-  double _progress = 0.0;
+  double _progress = 0.0; // To track the upload progress
   bool _isUploading = false;
-  bool _isFilePicking = false;
+  bool _isFilePicking = false; // New state to track if file is being picked
   double speedInMBps = 0.0;
+  late String fileName = "hello";
 
   Future<void> pickAndUploadPDF() async {
+    // Show loader while the file is being picked
     setState(() {
       _isFilePicking = true;
     });
 
+    // Open file picker and allow user to select a PDF file
     FilePickerResult? result = await FilePicker.platform
         .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
 
+    // Hide the loader once the file picker is done
     setState(() {
       _isFilePicking = false;
     });
@@ -369,6 +550,8 @@ class _UploadFileState extends State<UploadFile> {
 
       if (filePath != null) {
         print('PDF file selected: $filePath');
+
+        // Call the upload function
         await uploadPDF(filePath);
       }
     } else {
@@ -376,21 +559,21 @@ class _UploadFileState extends State<UploadFile> {
     }
   }
 
+  // Upload file with progress tracking and speed calculation using Dio
   Future<void> uploadPDF(String filePath) async {
     Dio dio = Dio();
+
+    // Prepare the file
     File file = File(filePath);
-    String fileName = file.path.split('/').last;
+    fileName = file.path.split('/').last;
     var url = dotenv.env['URL']! + "UploadPdf";
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    // Create a FormData object to send the file
     FormData formData = FormData.fromMap({
       'file': await MultipartFile.fromFile(file.path, filename: fileName),
       'token': prefs.getString("token")
     });
-
-    List<String> uploadedFiles = prefs.getStringList("uploadedFiles") ?? [];
-    uploadedFiles.add(fileName);
-    await prefs.setStringList("uploadedFiles", uploadedFiles);
 
     setState(() {
       _isUploading = true;
@@ -402,7 +585,7 @@ class _UploadFileState extends State<UploadFile> {
     int totalBytesSend = 0;
 
     try {
-      await dio.post(
+      var res = await dio.post(
         url,
         data: formData,
         onSendProgress: (sent, total) {
@@ -411,6 +594,7 @@ class _UploadFileState extends State<UploadFile> {
               _progress = sent / total;
             });
 
+            // Calculate transfer speed
             int currentTime = DateTime.now().millisecondsSinceEpoch;
             int bytesTransferred = sent - totalBytesSend;
             int timeTaken = currentTime - lastTime;
@@ -427,23 +611,34 @@ class _UploadFileState extends State<UploadFile> {
       setState(() {
         _isUploading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('File uploaded successfully'),
-        backgroundColor: Colors.green,
-      ));
+      if (res.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('File uploaded successfully'),
+          backgroundColor: Colors.green,
+        ));
+        var data=res.data;
+        print(data);
+        var collactionFileName=data['collactionName'];
+        print(collactionFileName);
+        widget.onNameChange(fileName, collactionFileName); // Set the page name
+        widget.toggleUploadStatus();
+
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => Home()));
+      }
+
       print('File uploaded successfully');
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Home()));
-    } catch (e) {
-      setState(() {
-        _isUploading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Error while uploading file,Try again'),
-        backgroundColor: Colors.red,
-      ));
-      print('Error uploading file: $e');
-    } finally {
+    // } catch (e) {
+    //   setState(() {
+    //     _isUploading = false;
+    //   });
+    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+    //     content: Text('Error while uploading file,Try again'),
+    //     backgroundColor: Colors.red,
+    //   ));
+    //   print('Error uploading file: $e');
+    // } 
+    }finally {
       dio.close();
     }
   }
@@ -460,6 +655,7 @@ class _UploadFileState extends State<UploadFile> {
               CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               ),
+
             if (_isUploading)
               Column(
                 children: [
@@ -471,11 +667,13 @@ class _UploadFileState extends State<UploadFile> {
                   ),
                 ],
               ),
+            // Button to trigger file picker
             if (!_isUploading && !_isFilePicking)
               ElevatedButton.icon(
                 icon: Icon(
                   Icons.upload,
                   color: Colors.white,
+                  // size: 30.0,
                 ),
                 label: Text(
                   'Upload PDF',
@@ -485,6 +683,7 @@ class _UploadFileState extends State<UploadFile> {
                   pickAndUploadPDF();
                 },
                 style: ButtonStyle(
+                    //color of button
                     backgroundColor: MaterialStateProperty.all<Color>(
                         Colors.deepPurpleAccent),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
