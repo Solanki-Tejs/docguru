@@ -56,3 +56,6 @@ typing_extensions==4.12.2
 uvicorn==0.34.0
 watchfiles==1.0.3
 websockets==14.1
+
+
+create table vectordb_detail(vector_id int AUTO_INCREMENT,collection_name varchar(30),uid int,pdf_id int,PRIMARY KEY (vector_id));

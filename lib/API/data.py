@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Response, status,File, UploadFile,Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from init import load_document, chunks_embedding, retriving, vector_init, split_docs_into_chunks
 from pydantic import BaseModel
 from database import database
 from typing import List,Optional,Dict
@@ -211,6 +212,24 @@ async def InsertPdf(response: Response,uid,name):
         con.close()
     pass
 
+
+async def insert_embedding_details(collection_name,uid,pdfid):
+    db=database()
+    try:
+        con=db.cursor()
+        query=f"insert into vectordb_detail(collection_name,uid,pdf_id) values('{collection_name}','{uid}','{pdfid}');"
+        con.execute(query)
+        db.commit()
+    except Exception as e:
+        print(e) 
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR  
+        # return {"status":"500","msg":"Internal Server Error"}
+    finally:
+        con.close()
+    pass
+
+
+
 @app.post("/UploadPdf")
 async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile = File(...)):
     try:
@@ -220,6 +239,14 @@ async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile =
         file_location = os.path.join(UploadDirectory, (f"pdf{pdfid}_"+f"ui{uid}"+".pdf"))
         with open(file_location, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
+        # LLM
+        docs = load_document(file_location)
+        chunks = split_docs_into_chunks(docs)
+        collection_name = (f"pdf{pdfid}_"+f"ui{uid}")
+        vectorDB_loc = f"{uid}"
+        db = vector_init(collection_name, vectorDB_loc)
+        chunks_embedding(chunks, db)  
+        insert_embedding_details(collection_name,uid,pdfid)
         return {"message": "File uploaded successfully"}
     except Exception as e:
         # Handle any errors
@@ -229,6 +256,11 @@ async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile =
     pass 
 
 async def stream_answer(message: str):
+    
+    db = vector_init(collection_name, uid)
+    response = retriving(db)
+    
+    
     data = {
         'model': 'llama3',
         'prompt': message,
@@ -248,10 +280,18 @@ async def stream_answer(message: str):
 
 @app.post("/chat")
 async def chat(request: details):
+    
+    # chat -> message -> collection_nmae, uid -> db -> docs -> llm -> 
+    # token ,pdf,msg -> 
+    
+    
+    # hello ? 7
+    
     if not request.message:
         response.status_code = status.HTTP_400_BAD_REQUEST
     
-    return StreamingResponse(stream_answer(request.message), media_type="text/plain")
+    # return StreamingResponse(stream_answer(request.message), media_type="text/plain")
+    return "hello"
 
 
 @app.get("/")

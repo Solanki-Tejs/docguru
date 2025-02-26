@@ -6,6 +6,7 @@ import 'package:docguru/PAGE/SignIn.dart';
 import 'package:docguru/PAGE/UploadFile.dart';
 // import 'package:docguru/PAGE/chatpage2.dart';
 import 'package:docguru/PAGE/email_veri.dart';
+import 'package:docguru/PAGE/ss.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -15,7 +16,7 @@ void main() async {
     debugShowCheckedModeBanner: false,
     home: SafeArea(
       top: true,
-      child: ChatPage(),
+      child: Splashscreen(),
       // child: UploadFile(),
     ),
   ));

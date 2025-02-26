@@ -45,3 +45,6 @@ app.*.map.json
 /lib/API/.env
 /assets/.env
 /lib/API/database.py
+/lib/API/env
+/lib/API/pdf
+/lib/API/vectorDB
