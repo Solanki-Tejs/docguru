@@ -2,6 +2,7 @@ from fastapi import FastAPI, Response, status,File, UploadFile,Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from init import load_document, chunks_embedding, retriving, vector_init, split_docs_into_chunks
+from chatAgent import chatAgent
 from pydantic import BaseModel
 from database import database
 from typing import List,Optional,Dict
@@ -218,7 +219,7 @@ async def insert_embedding_details(collection_name,uid,pdfid):
     db=database()
     try:
         con=db.cursor()
-        query=f"insert into vectordb_detail(collection_name,uid,pdf_id) values('{collection_name}','{uid}','{pdfid}');"
+        query=f"insert into vectordb_detail(collection_name,uid,pdf_id) values('{collection_name}',{uid},{pdfid});"
         con.execute(query)
         db.commit()
     except Exception as e:
@@ -233,6 +234,7 @@ async def insert_embedding_details(collection_name,uid,pdfid):
 
 @app.post("/UploadPdf")
 async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile = File(...)):
+    print("upload")
     try:
         email=decode_jwt(token)
         uid=fatch_id(email)
@@ -247,7 +249,7 @@ async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile =
         vectorDB_loc = f"{uid}"
         db = vector_init(collection_name, vectorDB_loc)
         chunks_embedding(chunks, db)  
-        insert_embedding_details(collection_name,uid,pdfid)
+        await insert_embedding_details(collection_name,uid,pdfid)
         return {"message": "File uploaded successfully","collactionName":collection_name}
     except Exception as e:
         # Handle any errors
@@ -257,7 +259,7 @@ async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile =
     pass 
 
 async def stream_answer(message: str):
-    
+    print("msg")
     db = vector_init(collection_name, uid)
     response = retriving(db)
     
@@ -281,10 +283,10 @@ async def stream_answer(message: str):
 
 def returnChunks(collection_name, message):
     # collection_name = (f"pdf{pdfid}_"+f"ui{uid}")
-    vectorDB_loc = f"{18}"
-    db = vector_init(collection_name, "18")
+    vectorDB_loc = f"{20}"
+    db = vector_init(collection_name, "20")
     response = retriving(db, message)
-    return response
+    return response, db
 
 @app.post("/chat")
 async def chat(request: details):
@@ -292,7 +294,7 @@ async def chat(request: details):
     # chat -> message -> collection_nmae, uid -> db -> docs -> llm -> 
     # token ,pdf,msg -> 
     
-    
+    print("chat")
     # hello ? 7
     print(request.collactionName)
     if not request.message:
@@ -304,9 +306,13 @@ async def chat(request: details):
     collectionName = request.collactionName
     message = request.message
     
-    response = returnChunks(collectionName, message)
-    print('response_chunks = ', response)
-    return response
+    # response, db = returnChunks(collectionName, message)
+    # print('response_chunks = ', response)
+    db = vector_init(request.collactionName, "20")
+    # print(StreamingResponse(chatAgent(db, message), media_type="text/plain"))
+    return StreamingResponse(chatAgent(db, message), media_type="application/json; charset=utf-8")
+
+    # return chatAgent(db, message)
     # return StreamingResponse(stream_answer(response), media_type="text/plain")
 
 
