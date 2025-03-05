@@ -248,7 +248,7 @@ async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile =
         collection_name = (f"pdf{pdfid}_"+f"ui{uid}")
         vectorDB_loc = f"{uid}"
         db = vector_init(collection_name, vectorDB_loc)
-        chunks_embedding(chunks, db)  
+        chunks_embedding(chunks, db)
         await insert_embedding_details(collection_name,uid,pdfid)
         return {"message": "File uploaded successfully","collactionName":collection_name}
     except Exception as e:
@@ -284,7 +284,7 @@ async def stream_answer(message: str):
 def returnChunks(collection_name, message):
     # collection_name = (f"pdf{pdfid}_"+f"ui{uid}")
     vectorDB_loc = f"{20}"
-    db = vector_init(collection_name, "20")
+    db = vector_init(collection_name, "2")
     response = retriving(db, message)
     return response, db
 
@@ -304,11 +304,12 @@ async def chat(request: details):
     # return "hello"
     
     collectionName = request.collactionName
+    print(collectionName)
     message = request.message
     
     # response, db = returnChunks(collectionName, message)
     # print('response_chunks = ', response)
-    db = vector_init(request.collactionName, "20")
+    db = vector_init(request.collactionName, "2")
     # print(StreamingResponse(chatAgent(db, message), media_type="text/plain"))
     return StreamingResponse(chatAgent(db, message), media_type="application/json; charset=utf-8")
 

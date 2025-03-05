@@ -16,8 +16,8 @@ void main() async {
     debugShowCheckedModeBanner: false,
     home: SafeArea(
       top: true,
-      child: Home(),
-      // child: UploadFile(),
+      // child: Home(),
+      child: Splashscreen(),
     ),
   ));
 }

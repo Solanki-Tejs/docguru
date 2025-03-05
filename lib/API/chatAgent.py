@@ -3,7 +3,7 @@ from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_ollama import OllamaLLM
 
-llm=OllamaLLM(model="llama3",streaming=True)
+llm=OllamaLLM(model="tinyllama",streaming=True)
 
 prompt = ChatPromptTemplate.from_template("""
 Answer the following question based only on the provided context. 
@@ -13,40 +13,39 @@ Think step by step before providing a detailed answer.
 </context>
 Question: {input}""")
 
+def save_chunks_to_txt(chunked_docs, filename):
+    with open(filename, "w", encoding="utf-8") as f:
+        for chunk in chunked_docs:
+            f.write(f"--- Metadata ---\n")
+            for key, value in chunk.metadata.items():
+                f.write(f"{key}: {value}\n")
+            f.write("\n--- Content ---\n")
+            f.write(chunk.page_content + "\n")
+            f.write("=" * 50 + "\n\n")
+
 def chatAgent(db, message):
     retriever = db.as_retriever()
-    print(retriever)
-    # print("land")
+    # print(retriever)
+    
     document_chain=create_stuff_documents_chain(llm,prompt)
-    print(document_chain)
-    # print("lasan")
+    # print(document_chain)
+    
     retrieval_chain=create_retrieval_chain(retriever,document_chain)
-    print(retrieval_chain)
-    # print("pubg")
-    # for chunk in retrieval_chain.stream({"input": message}):
-    #     yield chunk
+    # print(retrieval_chain)
+
+    retrieved_docs = retriever.invoke(message)
+    print(retrieved_docs)
+    save_chunks_to_txt(retrieved_docs, "./retrived_docs/retrive.txt")
+    # print("\nRetrieved Chunks:")
+    # for doc in retrieved_docs:
+    #     print(doc.page_content)
 
     for chunk in retrieval_chain.stream({"input": message}):
         if isinstance(chunk, dict):  
-            # Convert to string safely
-            print("hello")
+    
+            # print("hello")
             yield str(chunk.get("answer",""))
-            print("hello")  
+            # print("hello")  
         else:
             yield chunk
-            print("hello")
-
-
-    # with requests.post(URL, json=data, stream=True) as r:
-    #     for line in r.iter_lines():
-    #         if line:
-    #             try:
-    #                 response_json = json.loads(line)
-    #                 yield response_json.get("response", "")  # Send each chunk as received
-    #                 time.sleep(0.05)  # Optional delay for better UX
-    #             except json.JSONDecodeError:
-    #                 continue
-
-
-    # response=retrieval_chain.invoke({"input": message})
-    # return response
+            # print("hello")
