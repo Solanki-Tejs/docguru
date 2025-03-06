@@ -811,6 +811,7 @@ class _HomeState extends State<Home> {
   Future<void> loadPages() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int pageCount = prefs.getInt('page_count') ?? 0;
+    int? onPage=prefs.getInt("onPage") ?? 0;
     List<String> loadedPageNames = [];
     List<String> loadedCollactionNames = [];
     List<bool> loadedUploadStatuses = [];
@@ -833,7 +834,7 @@ class _HomeState extends State<Home> {
 
       uploadStatuses = loadedUploadStatuses;
       chatMessages = loadedChatMessages;
-      currentPageIndex = pageNames.isEmpty ? 0 : currentPageIndex;
+      currentPageIndex = pageNames.isEmpty ? 0 : onPage;
     });
   }
 
@@ -1067,6 +1068,7 @@ class _HomeState extends State<Home> {
                       Text("No Pages Created", style: TextStyle(fontSize: 24)))
               : uploadStatuses[currentPageIndex]
                   ? ChatPage(
+                    pageName: pageNames[currentPageIndex],
                       pageIndex: currentPageIndex,
                       messages: chatMessages[currentPageIndex],
                       onMessagesUpdated: (updatedMessages) {

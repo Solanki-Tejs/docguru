@@ -530,6 +530,11 @@ class _UploadFileState extends State<UploadFile> {
   double speedInMBps = 0.0;
   late String fileName = "hello";
 
+  Future<void> onPage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt("onPage", widget.pageIndex);
+  }
+
   Future<void> pickAndUploadPDF() async {
     // Show loader while the file is being picked
     setState(() {
@@ -616,9 +621,9 @@ class _UploadFileState extends State<UploadFile> {
           content: Text('File uploaded successfully'),
           backgroundColor: Colors.green,
         ));
-        var data=res.data;
+        var data = res.data;
         print(data);
-        var collactionFileName=data['collactionName'];
+        var collactionFileName = data['collactionName'];
         print(collactionFileName);
         widget.onNameChange(fileName, collactionFileName); // Set the page name
         widget.toggleUploadStatus();
@@ -628,23 +633,24 @@ class _UploadFileState extends State<UploadFile> {
       }
 
       print('File uploaded successfully');
-    // } catch (e) {
-    //   setState(() {
-    //     _isUploading = false;
-    //   });
-    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //     content: Text('Error while uploading file,Try again'),
-    //     backgroundColor: Colors.red,
-    //   ));
-    //   print('Error uploading file: $e');
-    // } 
-    }finally {
+      // } catch (e) {
+      //   setState(() {
+      //     _isUploading = false;
+      //   });
+      //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      //     content: Text('Error while uploading file,Try again'),
+      //     backgroundColor: Colors.red,
+      //   ));
+      //   print('Error uploading file: $e');
+      // }
+    } finally {
       dio.close();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    onPage();
     return Scaffold(
       backgroundColor: Color.fromARGB(225, 7, 7, 27),
       body: Center(

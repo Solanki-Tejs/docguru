@@ -176,17 +176,20 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatPage extends StatefulWidget {
   final int pageIndex;
   final List<String> messages; // Holds chat messages for this specific page
-  final Function(List<String>)
-      onMessagesUpdated; // Callback to update parent state
+  final Function(List<String>) onMessagesUpdated;
+
+  final dynamic pageName; // Callback to update parent state
 
   const ChatPage({
     super.key,
+    required this.pageName,
     required this.pageIndex,
     required this.messages,
     required this.onMessagesUpdated,
@@ -201,6 +204,11 @@ class _ChatPageState extends State<ChatPage> {
 
   // NEW: ScrollController added for auto-scrolling
   final ScrollController _scrollController = ScrollController();
+
+  Future<void> onPage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt("onPage", widget.pageIndex);
+  }
 
   // NEW: Function to scroll to the bottom when new messages arrive
   void _scrollToBottom() {
@@ -230,12 +238,16 @@ class _ChatPageState extends State<ChatPage> {
         prefs.getString('CollactionNames_${widget.pageIndex}_name');
     print("Collection Name: $collactionName");
 
+    String? token = prefs.getString('token');
+    var url = dotenv.env['URL']! + "chat";
     try {
-      final request =
-          http.Request("POST", Uri.parse('http://192.168.118.78:8000/chat'));
+      final request = http.Request("POST", Uri.parse(url));
       request.headers["Content-Type"] = "application/json";
-      request.body =
-          jsonEncode({"message": message, "collactionName": collactionName});
+      request.body = jsonEncode({
+        "message": message,
+        "collactionName": collactionName,
+        "token": token
+      });
 
       final response = await http.Client().send(request);
 
@@ -294,15 +306,22 @@ class _ChatPageState extends State<ChatPage> {
     return Align(
       alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        margin: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-        decoration: BoxDecoration(
-          color: isUserMessage ? Colors.blueAccent : Colors.deepPurpleAccent,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Text(
-          message,
-          style: TextStyle(color: Colors.white),
+        padding: isUserMessage ? EdgeInsets.only(bottom: 2,left: 50,right: 2,top: 2) : EdgeInsets.only(bottom: 2,left: 2,right: 50,top: 2) ,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          margin: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+          decoration: BoxDecoration(
+            // color: isUserMessage ? Colors.blueAccent : Colors.deepPurpleAccent,
+            color:  isUserMessage ? Colors.deepPurpleAccent : Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            message,
+            style: TextStyle(
+              // color: Colors.white
+              color: isUserMessage ? Colors.white : Colors.black,
+              ),
+          ),
         ),
       ),
     );
@@ -310,10 +329,11 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    onPage();
     return Scaffold(
       backgroundColor: Color.fromARGB(225, 7, 7, 27),
       appBar: AppBar(
-        title: Text("Chat on Page ${widget.pageIndex + 1}"),
+        title: Text("${widget.pageName}",style: TextStyle(color: Colors.white),),
         backgroundColor: Colors.transparent,
       ),
       body: Column(

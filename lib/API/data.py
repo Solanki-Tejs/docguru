@@ -52,6 +52,7 @@ def create_jwt(email):
 
 def decode_jwt(token):
     token_data=jwt.decode(token,key,algorithms=algorithm)
+    print(token_data)
     return token_data["email"]
     pass
 
@@ -281,9 +282,9 @@ async def stream_answer(message: str):
                     continue
 
 
-def returnChunks(collection_name, message):
+def returnChunks(collection_name, message,uid):
     # collection_name = (f"pdf{pdfid}_"+f"ui{uid}")
-    vectorDB_loc = f"{20}"
+    vectorDB_loc = f"{uid}"
     db = vector_init(collection_name, "2")
     response = retriving(db, message)
     return response, db
@@ -295,7 +296,6 @@ async def chat(request: details):
     # token ,pdf,msg -> 
     
     print("chat")
-    # hello ? 7
     print(request.collactionName)
     if not request.message:
         response.status_code = status.HTTP_400_BAD_REQUEST
@@ -306,10 +306,11 @@ async def chat(request: details):
     collectionName = request.collactionName
     print(collectionName)
     message = request.message
-    
+    email=decode_jwt(request.token)
+    uid=fatch_id(email)
     # response, db = returnChunks(collectionName, message)
     # print('response_chunks = ', response)
-    db = vector_init(request.collactionName, "2")
+    db = vector_init(request.collactionName, f"{uid}")
     # print(StreamingResponse(chatAgent(db, message), media_type="text/plain"))
     return StreamingResponse(chatAgent(db, message), media_type="application/json; charset=utf-8")
 

@@ -3,7 +3,7 @@ from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_ollama import OllamaLLM
 
-llm=OllamaLLM(model="tinyllama",streaming=True)
+llm=OllamaLLM(model="llama3",streaming=True)
 
 prompt = ChatPromptTemplate.from_template("""
 Answer the following question based only on the provided context. 
