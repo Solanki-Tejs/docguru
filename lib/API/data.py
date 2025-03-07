@@ -243,6 +243,9 @@ async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile =
         file_location = os.path.join(UploadDirectory, (f"pdf{pdfid}_"+f"ui{uid}"+".pdf"))
         with open(file_location, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
+            
+        print("uploading ended")
+            
         # LLM
         docs = load_document(file_location)
         chunks = split_docs_into_chunks(docs)
