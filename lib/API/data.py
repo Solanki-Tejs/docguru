@@ -313,7 +313,9 @@ async def chat(request: details):
     uid=fatch_id(email)
     # response, db = returnChunks(collectionName, message)
     # print('response_chunks = ', response)
+    start_time = time.time()
     db = vector_init(request.collactionName, f"{uid}")
+    print(f"Vector DB initialized in: {time.time() - start_time:.2f} seconds")
     # print(StreamingResponse(chatAgent(db, message), media_type="text/plain"))
     return StreamingResponse(chatAgent(db, message), media_type="application/json; charset=utf-8")
 

@@ -88,7 +88,7 @@ class _Splashscreen extends State<Splashscreen>
                       height: 10,
                     ),
                     const Text(
-                      'DocWizard',
+                      'DocGuru',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
