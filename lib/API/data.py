@@ -312,8 +312,8 @@ async def chat(request: details):
     return StreamingResponse(chatAgent(db, request.message), media_type="text/plain")
 
 
-@app.get("/EndChat")
-async def chat(request: details):
+@app.get("/endChat")
+async def stop():
     stop_generation()
     print("top_generation")
 

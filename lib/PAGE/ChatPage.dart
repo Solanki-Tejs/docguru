@@ -41,9 +41,16 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
-  Future<void> _stopMessage() async{
-    var url = dotenv.env['URL']! + "EndChat";
-    final request = http.Request("GET", Uri.parse(url));
+  Future<void> _stopMessage() async {
+    print('hey');
+    var url = dotenv.env['URL']! + "endChat";
+    await http.get(Uri.parse(url));
+    print('end');
+    int botIndex = widget.messages.length - 1;
+    setState(() {
+      widget.messages[botIndex] = "Bot: Ended";
+    });
+    // final request = http.Request("POST", Uri.parse(url));
   }
 
   Future<void> _sendMessage(String message) async {
@@ -128,7 +135,7 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-    Widget _buildMessageWidget(String message, bool isUserMessage) {
+  Widget _buildMessageWidget(String message, bool isUserMessage) {
     final boldRegex = RegExp(r'\*\*(.*?)\*\*');
     List<TextSpan> textSpans = [];
 
@@ -266,8 +273,8 @@ class _ChatPageState extends State<ChatPage> {
                           ),
                           onPressed: () {
                             _stopMessage();
-                            print("object");
-                            _controller.clear();
+                            print("hello");
+                            // _controller.clear();
                           },
                         ),
                       )
@@ -289,4 +296,3 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 }
-
