@@ -2,7 +2,7 @@ from fastapi import FastAPI, Response, status,File, UploadFile,Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from init import load_document, chunks_embedding, retriving, vector_init, split_docs_into_chunks
-from chatAgent import chatAgent
+from chatAgent import chatAgent,stop_generation
 from pydantic import BaseModel
 from database import database
 from typing import List,Optional,Dict
@@ -294,34 +294,28 @@ def returnChunks(collection_name, message,uid):
 
 @app.post("/chat")
 async def chat(request: details):
-    
-    # chat -> message -> collection_nmae, uid -> db -> docs -> llm -> 
-    # token ,pdf,msg -> 
-    
+
     print("chat")
     print(request.collactionName)
     if not request.message:
         response.status_code = status.HTTP_400_BAD_REQUEST
-    
-    # return StreamingResponse(stream_answer(request.message), media_type="text/plain")
-    # return "hello"
+
     
     collectionName = request.collactionName
     print(collectionName)
     message = request.message
     email=decode_jwt(request.token)
     uid=fatch_id(email)
-    # response, db = returnChunks(collectionName, message)
-    # print('response_chunks = ', response)
     start_time = time.time()
     db = vector_init(request.collactionName, f"{uid}")
     print(f"Vector DB initialized in: {time.time() - start_time:.2f} seconds")
-    # print(StreamingResponse(chatAgent(db, message), media_type="text/plain"))
-    return StreamingResponse(chatAgent(db, message), media_type="application/json; charset=utf-8")
+    return StreamingResponse(chatAgent(db, request.message), media_type="text/plain")
 
-    # return chatAgent(db, message)
-    # return StreamingResponse(stream_answer(response), media_type="text/plain")
 
+@app.get("/EndChat")
+async def chat(request: details):
+    stop_generation()
+    print("top_generation")
 
 @app.get("/")
 def main():

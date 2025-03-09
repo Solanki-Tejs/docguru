@@ -82,6 +82,7 @@ class _UploadFileState extends State<UploadFile> {
     var url = dotenv.env['URL']! + "UploadPdf";
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    try {
     // Create a FormData object to send the file
     FormData formData = FormData.fromMap({
       'file': await MultipartFile.fromFile(file.path, filename: fileName),
@@ -97,7 +98,6 @@ class _UploadFileState extends State<UploadFile> {
     int lastTime = DateTime.now().millisecondsSinceEpoch;
     int totalBytesSend = 0;
 
-    try {
       var res = await dio.post(
         url,
         data: formData,
