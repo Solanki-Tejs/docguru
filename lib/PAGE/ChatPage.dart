@@ -305,10 +305,9 @@
 //   }
 // }
 
-
-
 import 'dart:convert';
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -337,7 +336,7 @@ class _ChatPageState extends State<ChatPage> {
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool isSend = false;
-  StreamSubscription? _responseSubscription;  // Declare stream subscription
+  StreamSubscription? _responseSubscription; // Declare stream subscription
 
   Future<void> onPage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -356,7 +355,8 @@ class _ChatPageState extends State<ChatPage> {
     print('Stopping the message');
 
     var url = dotenv.env['URL']! + "endChat";
-    await http.get(Uri.parse(url));  // Stop message from server side if necessary
+    await http
+        .get(Uri.parse(url)); // Stop message from server side if necessary
 
     setState(() {
       isSend = false;
@@ -416,7 +416,8 @@ class _ChatPageState extends State<ChatPage> {
         int botIndex = widget.messages.length - 1;
 
         // Store the stream subscription
-        _responseSubscription = response.stream.transform(utf8.decoder).listen((chunk) {
+        _responseSubscription =
+            response.stream.transform(utf8.decoder).listen((chunk) {
           final endTime = DateTime.now();
           final responseTime = endTime.difference(startTime).inMilliseconds;
           print("Response Time: ${responseTime}ms");
@@ -473,7 +474,8 @@ class _ChatPageState extends State<ChatPage> {
         textSpans.add(TextSpan(
           text: message.substring(start, match.start),
           style: TextStyle(
-            color: isUserMessage ? Colors.white : Colors.black,
+            // color: isUserMessage ? Colors.white : Colors.black,
+            color: Colors.white,
           ),
         ));
       }
@@ -483,7 +485,8 @@ class _ChatPageState extends State<ChatPage> {
         text: match.group(1), // The text inside **
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          color: isUserMessage ? Colors.white : Colors.black,
+          // color: isUserMessage ? Colors.white : Colors.black,
+          color: Colors.white,
         ),
       ));
 
@@ -495,46 +498,87 @@ class _ChatPageState extends State<ChatPage> {
       textSpans.add(TextSpan(
         text: message.substring(start),
         style: TextStyle(
-          color: isUserMessage ? Colors.white : Colors.black,
+          // color: isUserMessage ? Colors.black : Colors.white,
+          color: Colors.white,
         ),
       ));
     }
+    // return Align(
+    //   alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
+    //   child: Container(
+    //     padding: isUserMessage
+    //         ? EdgeInsets.only(bottom: 2, left: 50, right: 2, top: 2)
+    //         : EdgeInsets.only(bottom: 2, left: 2, right: 50, top: 2),
+    //     child: Container(
+    //       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+    //       margin: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+    //       decoration: BoxDecoration(
+    //         color:
+    //             isUserMessage ? Colors.deepPurpleAccent : Colors.grey.shade300,
+    //         borderRadius: isUserMessage
+    //             ? BorderRadius.only(
+    //                 topLeft: Radius.circular(12),
+    //                 topRight: Radius.circular(0),
+    //                 bottomLeft: Radius.circular(12),
+    //                 bottomRight: Radius.circular(12))
+    //             : BorderRadius.only(
+    //                 topLeft: Radius.circular(0),
+    //                 topRight: Radius.circular(12),
+    //                 bottomLeft: Radius.circular(12),
+    //                 bottomRight: Radius.circular(12)),
+    //       ),
+    //       child: message == "loading..."
+    //           ? SizedBox(
+    //               width: 25,
+    //               child: SpinKitThreeBounce(
+    //                   color: isUserMessage ? Colors.white : Colors.black,
+    //                   size: 15),
+    //             )
+    //           : RichText(
+    //               text: TextSpan(
+    //                 children: textSpans,
+    //               ),
+    //             ),
+    //     ),
+    //   ),
+    // );
+
     return Align(
       alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         padding: isUserMessage
             ? EdgeInsets.only(bottom: 2, left: 50, right: 2, top: 2)
             : EdgeInsets.only(bottom: 2, left: 2, right: 50, top: 2),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-          margin: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-          decoration: BoxDecoration(
-            color:
-                isUserMessage ? Colors.deepPurpleAccent : Colors.grey.shade300,
-            borderRadius: isUserMessage
-                ? BorderRadius.only(
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(0),
-                    bottomLeft: Radius.circular(12),
-                    bottomRight: Radius.circular(12))
-                : BorderRadius.only(
-                    topLeft: Radius.circular(0),
-                    topRight: Radius.circular(12),
-                    bottomLeft: Radius.circular(12),
-                    bottomRight: Radius.circular(12)),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              margin: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+              decoration: BoxDecoration(
+                color: isUserMessage
+                    ? Colors.white.withOpacity(0.2) // Frosted effect
+                    : Colors.transparent, // Fully transparent
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: message == "loading..."
+                  ? SizedBox(
+                      width: 25,
+                      child: SpinKitThreeBounce(
+                          // color: isUserMessage ? Colors.white : Colors.black,
+                          color: Colors.white,
+                          size: 15),
+                    )
+                  : RichText(
+                      text: TextSpan(
+                        style: TextStyle(color: Colors.white),
+                        // color: isUserMessage ? Colors.white : Colors.black),
+                        children: textSpans,
+                      ),
+                    ),
+            ),
           ),
-          child: message == "loading..."
-              ? SizedBox(
-                  width: 25,
-                  child: SpinKitThreeBounce(
-                      color: isUserMessage ? Colors.white : Colors.black,
-                      size: 15),
-                )
-              : RichText(
-                  text: TextSpan(
-                    children: textSpans,
-                  ),
-                ),
         ),
       ),
     );
@@ -545,12 +589,17 @@ class _ChatPageState extends State<ChatPage> {
     onPage();
     _scrollToBottom();
     return Scaffold(
-      backgroundColor: Color.fromARGB(225, 7, 7, 27),
+      // backgroundColor: Color.fromARGB(225, 7, 7, 27),
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        centerTitle: true,
         title: Text(
-          "${widget.pageName}",
+          "${widget.pageName.substring(0, widget.pageName.length - 4).replaceFirst(widget.pageName[0], widget.pageName[0].toUpperCase())}",
+
+          // "${widget.pageName.substring(0, widget.pageName.length - 4)}",
           style: TextStyle(color: Colors.white),
         ),
+        elevation: 0,
         backgroundColor: Colors.transparent,
       ),
       body: Column(
@@ -570,6 +619,9 @@ class _ChatPageState extends State<ChatPage> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
+                SizedBox(
+                  width: 60,
+                ),
                 Expanded(
                   child: TextField(
                     controller: _controller,
@@ -581,7 +633,8 @@ class _ChatPageState extends State<ChatPage> {
                       hintStyle: TextStyle(color: Colors.white),
                       filled: true,
                       fillColor: Colors.black,
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50)),
                     ),
                   ),
                 ),

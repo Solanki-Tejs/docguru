@@ -811,7 +811,7 @@ class _HomeState extends State<Home> {
   Future<void> loadPages() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int pageCount = prefs.getInt('page_count') ?? 0;
-    int? onPage=prefs.getInt("onPage") ?? 0;
+    int? onPage = prefs.getInt("onPage") ?? 0;
     List<String> loadedPageNames = [];
     List<String> loadedCollactionNames = [];
     List<bool> loadedUploadStatuses = [];
@@ -923,12 +923,16 @@ class _HomeState extends State<Home> {
     print(scrwidth);
 
     return Scaffold(
-      backgroundColor: Color.fromARGB(225, 7, 7, 27),
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.transparent,
-        title: const Text("DocGuru", style: TextStyle(color: Colors.white)),
-      ),
+      // backgroundColor: Color.fromARGB(225, 7, 7, 27),
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
+      // appBar: AppBar(
+      //   foregroundColor: Colors.white,
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   // title: const Text("DocGuru", style: TextStyle(color: Colors.white)),
+      // ),
+
       drawer: Drawer(
         width: scrwidth / 1.2,
         backgroundColor: Colors.transparent,
@@ -1029,6 +1033,7 @@ class _HomeState extends State<Home> {
           ),
         ),
       ),
+
       // drawer: Drawer(
       //   child: ListView(
       //     children: [
@@ -1059,33 +1064,66 @@ class _HomeState extends State<Home> {
       //     ],
       //   ),
       // ),
-      body: Builder(
-        builder: (context) {
-          // Display the current page, with upload status checked
-          return pageNames.isEmpty
-              ? Center(
-                  child:
-                      Text("No Pages Created", style: TextStyle(fontSize: 24)))
-              : uploadStatuses[currentPageIndex]
-                  ? ChatPage(
-                    pageName: pageNames[currentPageIndex],
-                      pageIndex: currentPageIndex,
-                      messages: chatMessages[currentPageIndex],
-                      onMessagesUpdated: (updatedMessages) {
-                        setState(() {
-                          chatMessages[currentPageIndex] = updatedMessages;
-                        });
-                        savePages(); // Save updated messages
-                      },
-                    ) // Chat page if upload is complete
-                  : UploadFile(
-                      toggleUploadStatus: () =>
-                          toggleUploadStatus(currentPageIndex),
-                      pageIndex: currentPageIndex,
-                      onNameChange: (name, Filename) =>
-                          setPageName(currentPageIndex, name, Filename),
-                    ); // Upload page otherwise
-        },
+      body: Stack(
+        children: [
+          Builder(
+            builder: (context) {
+              // Display the current page, with upload status checked
+              return pageNames.isEmpty
+                  ? Center(
+                      child: Text("No Pages Created",
+                          style: TextStyle(fontSize: 24)))
+                  : uploadStatuses[currentPageIndex]
+                      ? Container(
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                            colors: [
+                              Color(0xffb048ff),
+                              Color(0xff262ea1),
+                              Color(0xff000000),
+                              Color(0xff000000)
+                            ],
+                            stops: [0.1, 0.3, 0.7, 0.85],
+                            begin: Alignment.topRight,
+                            end: Alignment.bottomLeft,
+                          )),
+                          child: ChatPage(
+                            pageName: pageNames[currentPageIndex],
+                            pageIndex: currentPageIndex,
+                            messages: chatMessages[currentPageIndex],
+                            onMessagesUpdated: (updatedMessages) {
+                              setState(() {
+                                chatMessages[currentPageIndex] =
+                                    updatedMessages;
+                              });
+                              savePages(); // Save updated messages
+                            },
+                          ),
+                        ) // Chat page if upload is complete
+                      : UploadFile(
+                          toggleUploadStatus: () =>
+                              toggleUploadStatus(currentPageIndex),
+                          pageIndex: currentPageIndex,
+                          onNameChange: (name, Filename) =>
+                              setPageName(currentPageIndex, name, Filename),
+                        ); // Upload page otherwise
+            },
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Builder(
+                builder: (context) => IconButton(
+                  icon: const Icon(Icons.grid_view),
+                  iconSize: 30,
+                  color: Colors.white,
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
