@@ -795,6 +795,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  var scaffoldKey = GlobalKey<ScaffoldState>();
+
   List<String> pageNames = [];
   List<String> CollactionNames = [];
   List<List<String>> chatMessages = [];
@@ -911,6 +913,26 @@ class _HomeState extends State<Home> {
         (Route) => false);
   }
 
+  void clearChat(int index) {
+    setState(() {
+      chatMessages[index] = [];
+    });
+    savePages();
+  }
+
+  void deletePage(int index) {
+    setState(() {
+      CollactionNames.removeAt(index);
+      pageNames.removeAt(index);
+      uploadStatuses.removeAt(index);
+      chatMessages.removeAt(index);
+      if (currentPageIndex >= pageNames.length) {
+        currentPageIndex = pageNames.isEmpty ? 0 : pageNames.length - 1;
+      }
+    });
+    savePages();
+  }
+
   @override
   Widget build(BuildContext context) {
     //screen size
@@ -923,15 +945,20 @@ class _HomeState extends State<Home> {
     print(scrwidth);
 
     return Scaffold(
+      key: scaffoldKey,
       // backgroundColor: Color.fromARGB(225, 7, 7, 27),
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-      // appBar: AppBar(
-      //   foregroundColor: Colors.white,
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   // title: const Text("DocGuru", style: TextStyle(color: Colors.white)),
-      // ),
+      appBar: AppBar(
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.menu_rounded),
+          onPressed: () => scaffoldKey.currentState?.openDrawer(),
+        ),
+        title: const Text("DocGuru", style: TextStyle(color: Colors.white)),
+      ),
 
       drawer: Drawer(
         width: scrwidth / 1.2,
@@ -973,20 +1000,57 @@ class _HomeState extends State<Home> {
                           ListTile(
                             title: Text(pageNames[i],
                                 style: TextStyle(color: Colors.white)),
+                            trailing: PopupMenuButton(
+                                icon: Icon(Icons.more_vert_sharp,
+                                    color: Colors.white),
+                                itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                        child: Row(
+                                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ),
+                                            Text(
+                                              "Clear Chat",
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                          ],
+                                        ),
+                                        onTap: () {
+                                          print("object1");
+                                          clearChat(i);
+                                        },
+                                      ),
+                                      PopupMenuItem(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ),
+                                            Text(
+                                              "Delete PDF",
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                          ],
+                                        ),
+                                        onTap: () {
+                                          print("object");
+                                          deletePage(i);
+                                        },
+                                      ),
+                                    ]),
                             onTap: () {
                               switchPage(i);
                               Navigator.pop(context); // Close the drawer
                             },
                           ),
-                        // ListTile(
-                        //   leading: Icon(Icons.add),
-                        //   title: Text("Add Page",style: TextStyle(color: Colors.white)),
-                        //   onTap: () {
-                        //     addPage();
-                        //     Navigator.pop(context); // Close the drawer
-                        //   },
-                        // ),
-                        // Add more menu items as needed.
                       ],
                     ),
                   ),
@@ -1108,20 +1172,6 @@ class _HomeState extends State<Home> {
                               setPageName(currentPageIndex, name, Filename),
                         ); // Upload page otherwise
             },
-          ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Builder(
-                builder: (context) => IconButton(
-                  icon: const Icon(Icons.grid_view),
-                  iconSize: 30,
-                  color: Colors.white,
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                ),
-              ),
-            ),
           ),
         ],
       ),

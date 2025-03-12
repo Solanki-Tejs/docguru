@@ -83,20 +83,20 @@ class _UploadFileState extends State<UploadFile> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     try {
-    // Create a FormData object to send the file
-    FormData formData = FormData.fromMap({
-      'file': await MultipartFile.fromFile(file.path, filename: fileName),
-      'token': prefs.getString("token")
-    });
+      // Create a FormData object to send the file
+      FormData formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(file.path, filename: fileName),
+        'token': prefs.getString("token")
+      });
 
-    setState(() {
-      _isUploading = true;
-      _progress = 0.0;
-      speedInMBps = 0.0;
-    });
+      setState(() {
+        _isUploading = true;
+        _progress = 0.0;
+        speedInMBps = 0.0;
+      });
 
-    int lastTime = DateTime.now().millisecondsSinceEpoch;
-    int totalBytesSend = 0;
+      int lastTime = DateTime.now().millisecondsSinceEpoch;
+      int totalBytesSend = 0;
 
       var res = await dio.post(
         url,
@@ -179,6 +179,8 @@ class _UploadFileState extends State<UploadFile> {
               (_progress == 1.0)
                   ? Column(
                       children: [
+                        loader,
+                        SizedBox(height: 20),
                         Text(
                           'Vectorizing your pdf.',
                           style: TextStyle(fontSize: 18, color: Colors.white),
@@ -187,8 +189,6 @@ class _UploadFileState extends State<UploadFile> {
                           'This may take a few mintes ... ',
                           style: TextStyle(fontSize: 12, color: Colors.white),
                         ),
-                        SizedBox(height: 20),
-                        loader,
                       ],
                     )
                   : Column(

@@ -591,17 +591,17 @@ class _ChatPageState extends State<ChatPage> {
     return Scaffold(
       // backgroundColor: Color.fromARGB(225, 7, 7, 27),
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          "${widget.pageName.substring(0, widget.pageName.length - 4).replaceFirst(widget.pageName[0], widget.pageName[0].toUpperCase())}",
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   title: Text(
+      //     "${widget.pageName.substring(0, widget.pageName.length - 4).replaceFirst(widget.pageName[0], widget.pageName[0].toUpperCase())}",
 
-          // "${widget.pageName.substring(0, widget.pageName.length - 4)}",
-          style: TextStyle(color: Colors.white),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-      ),
+      //     // "${widget.pageName.substring(0, widget.pageName.length - 4)}",
+      //     style: TextStyle(color: Colors.white),
+      //   ),
+      //   elevation: 0,
+      //   backgroundColor: Colors.transparent,
+      // ),
       body: Column(
         children: [
           Expanded(
@@ -619,9 +619,9 @@ class _ChatPageState extends State<ChatPage> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
-                SizedBox(
-                  width: 60,
-                ),
+                // SizedBox(
+                //   width: 60,
+                // ),
                 Expanded(
                   child: TextField(
                     controller: _controller,
