@@ -1,10 +1,7 @@
-// ignore_for_file: sort_child_properties_last, prefer_const_constructors, avoid_print, prefer_interpolation_to_compose_strings, file_names
-
 import 'dart:async';
 import 'dart:convert';
 import 'package:docguru/PAGE/Home.dart';
 import 'package:docguru/PAGE/newpass.dart';
-import 'package:docguru/PAGE/rename_it.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -27,7 +24,9 @@ class EmailVeri extends StatefulWidget {
 }
 
 class _EmailVeriState extends State<EmailVeri> {
-  // var send_otp = '102003';
+  bool isResendDisabled = false;
+  int resendCooldown = 60;
+  int baseCooldown = 60;
   var send_otp;
   final otp = TextEditingController();
 
@@ -37,6 +36,22 @@ class _EmailVeriState extends State<EmailVeri> {
 
     // Send OTP
     email_veri();
+  }
+
+  void startResendTimer() {
+    setState(() => isResendDisabled = true);
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      if (resendCooldown == 0) {
+        timer.cancel();
+        setState(() {
+          isResendDisabled = false;
+          baseCooldown *= 2; // Double the cooldown for the next click
+          resendCooldown = baseCooldown; // Reset to new doubled cooldown
+        });
+      } else {
+        setState(() => resendCooldown--);
+      }
+    });
   }
 
   Future<void> signup(otp) async {
@@ -108,18 +123,17 @@ class _EmailVeriState extends State<EmailVeri> {
       width: 56,
       height: 56,
       textStyle: TextStyle(
-          fontSize: 20,
-          color: Color.fromARGB(225, 7, 7, 27),
-          fontWeight: FontWeight.w600),
+          fontSize: 20, color: Colors.white, fontWeight: FontWeight.w600),
       decoration: BoxDecoration(
-        color: Color.fromRGBO(142, 147, 159, 1),
-        // border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
-        borderRadius: BorderRadius.circular(8),
+        // color: Color.fromRGBO(142, 147, 159, 1),
+        color: Colors.transparent,
+        border: Border.all(color: Colors.white),
+        borderRadius: BorderRadius.circular(16),
       ),
     );
 
     final focusedPinTheme = defaultPinTheme.copyDecorationWith(
-      color: Color.fromRGBO(160, 142, 211, 1),
+      color: Colors.white60,
 
       // border: Border.all(color: Color.fromRGBO(160, 142, 211, 1)),
       borderRadius: BorderRadius.circular(15),
@@ -129,7 +143,7 @@ class _EmailVeriState extends State<EmailVeri> {
       //backgroundColor change
       height: double.infinity,
       width: double.infinity,
-      decoration: const BoxDecoration(color: Color.fromARGB(225, 7, 7, 27)),
+      decoration: const BoxDecoration(color: Colors.black),
       child: Scaffold(
           backgroundColor: Colors.transparent,
           body: SingleChildScrollView(
@@ -137,156 +151,99 @@ class _EmailVeriState extends State<EmailVeri> {
               //padding for text and textfild
               padding: EdgeInsets.fromLTRB(
                   scrwidth / 20, scrheight * 0.20, scrwidth / 20, 0),
-              child: Form(
-                  child: Column(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        "E-mail verification",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'TimesNewRoman',
-                            fontSize: scrwidth / 15),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: scrheight / 15,
-                  ),
-                  Center(
-                    child: Text(
-                      'An OTP has been send at',
-                      style: TextStyle(
-                          color: Colors.white,
-                          // fontFamily: 'Arial',
-                          fontSize: scrwidth / 23),
+                  Icon(Icons.verified_user, size: 75, color: Colors.white),
+                  SizedBox(height: 25),
+                  Text(
+                    "Enter Verification Code",
+                    style: TextStyle(
+                      fontSize: 26, // Increased font size
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
                   ),
-                  Center(
+                  SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.center,
                     child: Text(
-                      widget.email,
-                      style: TextStyle(
-                          color: Colors.white,
-                          // fontFamily: 'Arial',
-                          fontWeight: FontWeight.w800,
-                          fontSize: scrwidth / 27),
+                      "We've sent a code to ${widget.email}",
+                      textAlign: TextAlign.center, // Ensure text is centered
+                      style: TextStyle(color: Colors.white70, fontSize: 20),
                     ),
                   ),
-                  SizedBox(
-                    height: scrheight / 20,
-                  ),
+                  SizedBox(height: 30),
                   Pinput(
                     controller: _pinController,
                     keyboardType: TextInputType.number,
                     defaultPinTheme: defaultPinTheme,
                     focusedPinTheme: focusedPinTheme,
                     length: 6,
-                    // onCompleted: (pin) {
-                    //   print(widget.RouteName);
-                    //   if (widget.RouteName == "ForgotPass") {
-                    //     Navigator.pushReplacement(
-                    //         context,
-                    //         MaterialPageRoute(
-                    //             builder: (context) => Newpass(
-                    //                   email: widget.email,
-                    //                 )));
-                    //   } else {
-                    //     signup(pin);
-                    //   }
-                    // },
                   ),
-                  // TextFormField(
-                  //     controller: otp,
-                  //     style: TextStyle(color: Colors.white),
-                  //     decoration: InputDecoration(
-                  //       fillColor: Colors.red,
-                  //       border: OutlineInputBorder(
-                  //           borderRadius: BorderRadius.circular(10)),
-                  //       prefixIcon: const Icon(Icons.phonelink_lock_rounded),
-                  //       labelText: 'verification code',
-                  //     )),
-                  SizedBox(
-                    height: scrheight / 70,
+                  SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: () {
+                      print(widget.RouteName);
+                      if (widget.RouteName == "ForgotPass") {
+                        String otp = _pinController.text;
+                        print("In verify:" + otp);
+                        if (otp.isEmpty || otp.length < 6) {
+                          return;
+                        } else {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Newpass(
+                                        email: widget.email,
+                                      )));
+                        }
+                      } else {
+                        String otp = _pinController.text;
+                        print("In verify:" + otp);
+                        if (otp.isEmpty || otp.length < 6) {
+                          return;
+                        } else {
+                          signup(otp);
+                        }
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                          Colors.white70, // Off white submit button
+                      minimumSize: Size(double.infinity, 60),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      shadowColor: Colors.white60,
+                      elevation: 12,
+                    ),
+                    child: Text(
+                      "Submit",
+                      style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
+                    ),
                   ),
-                  // Divider(
-                  //   endIndent: scrwidth / 1.8,
-                  //   indent: scrwidth / 40,
-                  //   thickness: 2,
-                  // ),
-                  SizedBox(
-                    height: scrheight / 70,
-                  ),
-                  Row(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Text(
-                      //   "if you dont have account click ",
-                      //   style: TextStyle(
-                      //       color: Colors.white, fontSize: scrwidth / 27),
-                      // ),
-                      InkWell(
-                          child: Text(
-                            "Resend it",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                // fontFamily: 'Arial',
-                                fontSize: scrwidth / 27),
-                          ),
-                          onTap: () {
+                  SizedBox(height: 25),
+                  TextButton(
+                    onPressed: isResendDisabled
+                        ? null
+                        : () {
+                            email_veri();
                             print('resent otp');
-                          })
-                    ],
-                  ),
-                  SizedBox(
-                    height: scrheight / 15,
-                  ),
-                  SizedBox(
-                      //height and width of button
-                      //aane fix kari deje karvu hoi to
-                      width: double.infinity,
-                      height: scrheight * 0.059,
-                      child: ElevatedButton(
-                          onPressed: () {
-                            // login();
-                            print(widget.RouteName);
-                            if (widget.RouteName == "ForgotPass") {
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Newpass(
-                                            email: widget.email,
-                                          )));
-                            } else {
-                              String otp = _pinController.text;
-                              print("In verify:" + otp);
-                              if (otp.isEmpty || otp.length < 6) {
-                                return;
-                              } else {
-                                signup(otp);
-                              }
-                            }
+                            startResendTimer();
                           },
-                          child: Text(
-                            "Verifiy",
-                            style: TextStyle(
-                                color: Colors.white,
-                                // fontFamily: 'Arial',
-                                fontSize: scrwidth / 22),
-                          ),
-                          style: ButtonStyle(
-                              //color of button
-                              backgroundColor: WidgetStateProperty.all<Color>(
-                                  Color.alphaBlend(
-                                      Colors.deepPurpleAccent, Colors.indigo)),
-                              shape: WidgetStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                                //side: BorderSide(color: Colors.red)
-                              ))))),
+                    child: Text(
+                      isResendDisabled
+                          ? "Resend Code (${resendCooldown}s)"
+                          : "Resend Code",
+                      style: TextStyle(fontSize: 20, color: Colors.white70),
+                    ),
+                  ),
                 ],
-              )),
+              ),
             ),
           )),
     );

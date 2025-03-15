@@ -1,3 +1,4 @@
+import datetime
 from fastapi import FastAPI, Response, status,File, UploadFile,Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
@@ -35,6 +36,8 @@ class details(BaseModel):
     token:Optional[str]=None 
     message: Optional[str]=None
     collactionName: Optional[str]=None
+    star:Optional[str]=None
+    feedbackMSG:Optional[str]=None
     pass
 
 if not os.path.exists(UploadDirectory):
@@ -262,6 +265,25 @@ async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile =
         return {"message": "File uploaded was not successfully"}
     pass 
 
+@app.post("/feedback")
+async def feedback(data:details):
+    db=database()
+    try:
+        email=decode_jwt(data.token)
+        uid=fatch_id(email)
+        con=db.cursor()
+        query=f"insert into feedback_detail(uid,msg,star,time) values('{uid}','{data.feedbackMSG}','{int(data.star)}','{datetime.datetime.now()}');"
+        con.execute(query)
+        db.commit()
+        return {"message": "feedback was successfully submited"}
+    except Exception as e:
+        print(e) 
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR  
+        # return {"status":"500","msg":"Internal Server Error"}
+    finally:
+        con.close()
+    pass
+
 async def stream_answer(message: str):
     print("msg")
     db = vector_init(collection_name, uid)
@@ -292,6 +314,8 @@ def returnChunks(collection_name, message,uid):
     response = retriving(db, message)
     return response, db
 
+
+
 @app.post("/chat")
 async def chat(request: details):
 
@@ -310,6 +334,7 @@ async def chat(request: details):
     db = vector_init(request.collactionName, f"{uid}")
     print(f"Vector DB initialized in: {time.time() - start_time:.2f} seconds")
     return StreamingResponse(chatAgent(db, request.message), media_type="text/plain")
+
 
 
 @app.get("/endChat")

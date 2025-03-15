@@ -16,7 +16,8 @@ class Newpass extends StatefulWidget {
 }
 
 class _NewpassState extends State<Newpass> {
-  bool _obscureText = true;
+  bool _obscurePassText = true;
+  bool _obscureConPassText = true;
 
   final configpassword = TextEditingController();
   final newpassword = TextEditingController();
@@ -102,10 +103,10 @@ class _NewpassState extends State<Newpass> {
                           suffixIcon: GestureDetector(
                             onTap: () {
                               setState(() {
-                                _obscureText = !_obscureText;
+                                _obscurePassText = !_obscurePassText;
                               });
                             },
-                            child: Icon(_obscureText
+                            child: Icon(_obscurePassText
                                 ? Icons.visibility
                                 : Icons.visibility_off),
                           ),
@@ -121,7 +122,7 @@ class _NewpassState extends State<Newpass> {
                           }
                           return null;
                         },
-                        obscureText: _obscureText,
+                        obscureText: _obscurePassText,
                       ),
                       SizedBox(
                         height: scrheight / 70,
@@ -138,10 +139,10 @@ class _NewpassState extends State<Newpass> {
                           suffixIcon: GestureDetector(
                             onTap: () {
                               setState(() {
-                                _obscureText = !_obscureText;
+                                _obscureConPassText = !_obscureConPassText;
                               });
                             },
-                            child: Icon(_obscureText
+                            child: Icon(_obscureConPassText
                                 ? Icons.visibility
                                 : Icons.visibility_off),
                           ),
@@ -157,7 +158,7 @@ class _NewpassState extends State<Newpass> {
                           }
                           return null;
                         },
-                        obscureText: _obscureText,
+                        obscureText: _obscureConPassText,
                       ),
                       SizedBox(
                         height: scrheight / 20,

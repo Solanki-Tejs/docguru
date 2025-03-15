@@ -6,10 +6,13 @@ table:
 user_detail:mysql> create table user_detail(uid int AUTO_INCREMENT,name varchar(30),email varchar(80),password varchar(20),PRIMARY KEY (uid));
 
 pdf_detail>
-CREATE TABLE pdf_detail (pdf_id INT AUTO_INCREMENT,ui INT,name VARCHAR(30),timedate DATETIME DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (pdf_id));
+CREATE TABLE pdf_detail (pdf_id INT AUTO_INCREMENT,ui INT,name VARCHAR(100),timedate DATETIME DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (pdf_id));
 
-pdf_detail>
-CREATE TABLE pdf_detail (pdf_id INT AUTO_INCREMENT,ui INT,name VARCHAR(30),timedate DATETIME DEFAULT CURRENT_TIMESTAMP,PRIMARY KEY (pdf_id));
+vectordb_detail>
+create table vectordb_detail(vector_id int AUTO_INCREMENT,collection_name varchar(30),uid int,pdf_id int,PRIMARY KEY (vector_id));
+
+feedback_detail>
+create table feedback_detail(fid int AUTO_INCREMENT,uid int,msg LONGTEXT,star int,time DATETIME,PRIMARY KEY (fid));
 
 requirements.txt
 
@@ -56,6 +59,3 @@ typing_extensions==4.12.2
 uvicorn==0.34.0
 watchfiles==1.0.3
 websockets==14.1
-
-
-create table vectordb_detail(vector_id int AUTO_INCREMENT,collection_name varchar(30),uid int,pdf_id int,PRIMARY KEY (vector_id));
