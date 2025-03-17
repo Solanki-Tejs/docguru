@@ -21,11 +21,22 @@ class _HomeState extends State<Home> {
   List<List<String>> chatMessages = [];
   List<bool> uploadStatuses = [];
   int currentPageIndex = 0;
+  late String userName;
+  late String email;
+  late String profile;
 
   @override
   void initState() {
     super.initState();
     loadPages();
+    loadProfile();
+  }
+
+  Future<void> loadProfile() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userName = prefs.getString("userName") ?? "default";
+    email = prefs.getString("email") ?? "default@mail";
+    profile = prefs.getString("profile") ?? "default";
   }
 
   // Loading pages and chat messages from SharedPreferences
@@ -207,18 +218,19 @@ class _HomeState extends State<Home> {
                         child: Row(
                           children: [
                             CircleAvatar(),
+                            SizedBox(
+                              width: 20,
+                            ),
                             Expanded(
                               child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Center(
-                                      child: Text(
-                                    "Name",
+                                  Text(
+                                    userName,
                                     style: TextStyle(color: Colors.white),
-                                  )),
-                                  Center(
-                                      child: Text("Email",
-                                          style:
-                                              TextStyle(color: Colors.white))),
+                                  ),
+                                  Text(email,
+                                      style: TextStyle(color: Colors.white)),
                                 ],
                               ),
                             )
@@ -233,9 +245,16 @@ class _HomeState extends State<Home> {
                       children: [
                         for (int i = 0; i < pageNames.length; i++)
                           ListTile(
+                            // tileColor: Colors.black,
                             title: Text(pageNames[i],
                                 style: TextStyle(color: Colors.white)),
                             trailing: PopupMenuButton(
+                                menuPadding: EdgeInsets.all(0),
+                                offset: Offset(-25, 30),
+                                color: Colors.white.withOpacity(0.5),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
                                 icon: Icon(Icons.more_vert_sharp,
                                     color: Colors.white),
                                 itemBuilder: (context) => [
@@ -244,13 +263,16 @@ class _HomeState extends State<Home> {
                                           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
+                                              Icons.delete_outline_sharp,
+                                              color: Colors.white,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
                                             ),
                                             Text(
                                               "Clear Chat",
                                               style: TextStyle(
-                                                  color: Colors.black),
+                                                  color: Colors.white),
                                             ),
                                           ],
                                         ),
@@ -261,17 +283,18 @@ class _HomeState extends State<Home> {
                                       ),
                                       PopupMenuItem(
                                         child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
                                           children: [
                                             Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
+                                              Icons.delete_forever_sharp,
+                                              color: Colors.white,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
                                             ),
                                             Text(
                                               "Delete PDF",
                                               style: TextStyle(
-                                                  color: Colors.black),
+                                                  color: Colors.white),
                                             ),
                                           ],
                                         ),

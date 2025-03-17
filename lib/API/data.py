@@ -272,7 +272,7 @@ async def feedback(data:details):
         email=decode_jwt(data.token)
         uid=fatch_id(email)
         con=db.cursor()
-        query=f"insert into feedback_detail(uid,msg,star,time) values('{uid}','{data.feedbackMSG}','{int(data.star)}','{datetime.datetime.now()}');"
+        query=f"insert into feedback_detail(uid,msg,star,time) values('{uid}','{data.feedbackMSG}','{float(data.star)}','{datetime.datetime.now()}');"
         con.execute(query)
         db.commit()
         return {"message": "feedback was successfully submited"}

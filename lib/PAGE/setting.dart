@@ -1,5 +1,6 @@
 import 'package:docguru/PAGE/AboutUs.dart';
 import 'package:docguru/PAGE/Feedback.dart';
+import 'package:docguru/PAGE/Profile.dart';
 import 'package:flutter/material.dart';
 
 class Setting extends StatefulWidget {
@@ -60,15 +61,15 @@ class _SettingState extends State<Setting> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(225, 7, 7, 27),
+      backgroundColor: Color.fromARGB(224, 0, 0, 0),
       appBar: AppBar(
         foregroundColor: Colors.white,
         // backgroundColor: Colors.deepPurpleAccent.withOpacity(0.3),
-        backgroundColor: Color(0xff121549),
+        backgroundColor: Colors.black,
       ),
       body: Container(
         decoration: BoxDecoration(
-          color: Color(0xff121549),
+          color: Colors.black,
           // color: Colors.deepPurpleAccent.withOpacity(0.3),
         ),
         child: Column(
@@ -83,7 +84,7 @@ class _SettingState extends State<Setting> with SingleTickerProviderStateMixin {
                       "Settings",
                       style: TextStyle(
                         color: Colors.white,
-                        fontFamily: 'TimesNewRoman',
+                        // fontFamily: 'TimesNewRoman',
                         fontSize: 40,
                       ),
                     ),
@@ -99,8 +100,8 @@ class _SettingState extends State<Setting> with SingleTickerProviderStateMixin {
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 21, 23, 31),
                     borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(18),
-                      topRight: Radius.circular(18),
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24),
                     ),
                   ),
                   child: Padding(
@@ -172,7 +173,9 @@ class _SettingState extends State<Setting> with SingleTickerProviderStateMixin {
       onTap: () {
         switch (title) {
           case "Personal Info":
-            print(title);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ProfilePage()));
+            // print(title);
             break;
           case "Manage Chat":
             print(title);

@@ -14,6 +14,8 @@ create table vectordb_detail(vector_id int AUTO_INCREMENT,collection_name varcha
 feedback_detail>
 create table feedback_detail(fid int AUTO_INCREMENT,uid int,msg LONGTEXT,star int,time DATETIME,PRIMARY KEY (fid));
 
+ALTER TABLE feedback_detail MODIFY COLUMN star FLOAT;
+
 requirements.txt
 
 annotated-types==0.7.0

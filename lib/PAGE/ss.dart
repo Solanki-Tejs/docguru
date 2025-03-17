@@ -31,6 +31,11 @@ class _Splashscreen extends State<Splashscreen>
 
     if (isSignIn != null) {
       // print('true');
+
+      // await prefs.setString("userName", "Viren");
+      // await prefs.setString("email", "viren.@gmail.com");
+      // await prefs.setString("profile", "Profile");
+
       Future.delayed(
         const Duration(seconds: 3),
         () {
