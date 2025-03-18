@@ -66,13 +66,12 @@ class _SignUpState extends State<SignUp> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(
-                scrwidth / 10, scrheight * 0.10, scrwidth / 10, 0),
-            child: Form(
-              key: _formKey,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(scrwidth / 10, 0, scrwidth / 10, 0),
+          child: Form(
+            key: _formKey,
+            child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -114,7 +113,15 @@ class _SignUpState extends State<SignUp> {
                       fillColor: Colors.black,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
+                        borderSide: BorderSide(color: Colors.white38),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: Colors.white38),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                     ),
                     validator: (value) {
@@ -139,7 +146,15 @@ class _SignUpState extends State<SignUp> {
                       fillColor: Colors.black,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
+                        borderSide: BorderSide(color: Colors.white38),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: Colors.white38),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                     ),
                     validator: (value) {
@@ -168,7 +183,15 @@ class _SignUpState extends State<SignUp> {
                       fillColor: Colors.black,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
+                        borderSide: BorderSide(color: Colors.white38),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: Colors.white38),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: BorderSide(color: Colors.white),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -214,20 +237,6 @@ class _SignUpState extends State<SignUp> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
                         color: Colors.grey.shade300,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade700,
-                            blurRadius: 15,
-                            spreadRadius: 4,
-                            offset: Offset(6, 6),
-                          ),
-                          BoxShadow(
-                            color: Colors.grey.shade500,
-                            blurRadius: 15,
-                            spreadRadius: 4,
-                            offset: Offset(-6, -6),
-                          ),
-                        ],
                       ),
                       child: Text(
                         "Sign Up",

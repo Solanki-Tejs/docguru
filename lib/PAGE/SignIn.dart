@@ -73,192 +73,199 @@ class _SignInState extends State<SignIn> {
     print(scrheight);
     print(scrwidth);
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-              scrwidth / 10, scrheight * 0.10, scrwidth / 10, 0),
-          child: Center(
+    return Container(
+      height: double.infinity,
+      width: double.infinity,
+      decoration: const BoxDecoration(color: Colors.black),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(scrwidth / 10, 0, scrwidth / 10, 0),
             child: Form(
               key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.lock_open,
-                    size: 70,
-                    color: Colors.white,
-                  ),
-                  SizedBox(height: 30),
-                  Text(
-                    "Log In",
-                    style: TextStyle(
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.lock_open,
+                      size: 70,
                       color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Text(
-                    "Enter your credentials to continue",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 20,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 30),
-                  // _buildTextField(Icons.email, "Email Address"),
-                  TextFormField(
-                    controller: email,
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                    decoration: InputDecoration(
-                      prefixIcon:
-                          Icon(Icons.email, color: Colors.white70, size: 26),
-                      hintText: "Email Address",
-                      hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
-                      filled: true,
-                      fillColor: Colors.black,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
+                    SizedBox(height: 30),
+                    Text(
+                      "Log In",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'E-mail is required';
-                      }
-                      final emailRegex =
-                          RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                      if (!emailRegex.hasMatch(value)) {
-                        return 'Enter a valid email address';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 25),
-                  TextFormField(
-                    controller: password,
-                    obscureText: _obscureText,
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                    decoration: InputDecoration(
-                      prefixIcon:
-                          Icon(Icons.lock, color: Colors.white70, size: 26),
-                      hintText: "Password",
-                      hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
-                      filled: true,
-                      fillColor: Colors.black,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide.none,
+                    SizedBox(height: 20),
+                    Text(
+                      "Enter your credentials to continue",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 20,
                       ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscureText
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.white70,
-                          size: 26,
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 30),
+                    // _buildTextField(Icons.email, "Email Address"),
+                    TextFormField(
+                      controller: email,
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      decoration: InputDecoration(
+                        prefixIcon:
+                            Icon(Icons.email, color: Colors.white70, size: 26),
+                        hintText: "Email Address",
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
+                        filled: true,
+                        fillColor: Colors.black,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide(color: Colors.white38),
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        },
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide(color: Colors.white38),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
                       ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password is required';
-                      }
-                      final passwordRegex = RegExp(
-                          r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$');
-                      if (!passwordRegex.hasMatch(value)) {
-                        return 'Password must be \n\t - atleast 8 characters long, \n\t - no special symbols, \n\t - include one uppercase letter, \n\t - one lowercase letter, and one number';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(context,
-                            createSlideRoute(Forgetpass(), position: 'right'));
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'E-mail is required';
+                        }
+                        final emailRegex =
+                            RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                        if (!emailRegex.hasMatch(value)) {
+                          return 'Enter a valid email address';
+                        }
+                        return null;
                       },
-                      child: Text(
-                        "Forgot Password?",
-                        style: TextStyle(color: Colors.grey, fontSize: 18),
-                      ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  // _buildButton("Log In"),
-                  GestureDetector(
-                    onTap: () {
-                      if (_formKey.currentState!.validate()) {
-                        login();
-                      }
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: Colors.grey.shade300,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.shade700,
-                            blurRadius: 15,
-                            spreadRadius: 4,
-                            offset: Offset(6, 6),
+                    SizedBox(height: 25),
+                    TextFormField(
+                      controller: password,
+                      obscureText: _obscureText,
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      decoration: InputDecoration(
+                        prefixIcon:
+                            Icon(Icons.lock, color: Colors.white70, size: 26),
+                        hintText: "Password",
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
+                        filled: true,
+                        fillColor: Colors.black,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide(color: Colors.white38),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide(color: Colors.white38),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: BorderSide(color: Colors.white),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureText
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: Colors.white70,
+                            size: 26,
                           ),
-                          BoxShadow(
-                            color: Colors.grey.shade500,
-                            blurRadius: 15,
-                            spreadRadius: 4,
-                            offset: Offset(-6, -6),
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                        "Log In",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          onPressed: () {
+                            setState(() {
+                              _obscureText = !_obscureText;
+                            });
+                          },
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Password is required';
+                        }
+                        final passwordRegex = RegExp(
+                            r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$');
+                        if (!passwordRegex.hasMatch(value)) {
+                          return 'Password must be \n\t - atleast 8 characters long, \n\t - no special symbols, \n\t - include one uppercase letter, \n\t - one lowercase letter, and one number';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have an account? ",
-                        style: TextStyle(color: Colors.grey, fontSize: 18),
-                      ),
-                      TextButton(
+                    SizedBox(height: 20),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton(
                         onPressed: () {
-                          Navigator.push(context,
-                              createSlideRoute(SignUp(), position: 'right'));
+                          Navigator.push(
+                              context,
+                              createSlideRoute(Forgetpass(),
+                                  position: 'right'));
                         },
                         child: Text(
-                          "Sign Up",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
+                          "Forgot Password?",
+                          style: TextStyle(color: Colors.grey, fontSize: 18),
                         ),
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    SizedBox(height: 10),
+                    // _buildButton("Log In"),
+                    GestureDetector(
+                      onTap: () {
+                        if (_formKey.currentState!.validate()) {
+                          login();
+                        }
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(vertical: 20),
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: Colors.grey.shade300,
+                        ),
+                        child: Text(
+                          "Log In",
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Don't have an account? ",
+                          style: TextStyle(color: Colors.grey, fontSize: 18),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(context,
+                                createSlideRoute(SignUp(), position: 'right'));
+                          },
+                          child: Text(
+                            "Sign Up",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
