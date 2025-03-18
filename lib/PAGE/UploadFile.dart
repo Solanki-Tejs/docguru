@@ -163,7 +163,7 @@ class _UploadFileState extends State<UploadFile> {
   Widget build(BuildContext context) {
     onPage();
     return Scaffold(
-      backgroundColor: Color.fromARGB(225, 7, 7, 27),
+      backgroundColor: Colors.transparent,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

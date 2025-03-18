@@ -405,7 +405,8 @@ class _ChatPageState extends State<ChatPage> {
               controller: _scrollController,
               itemCount: widget.messages.length,
               itemBuilder: (context, index) {
-                bool isUserMessage = widget.messages[index].startsWith("You:");
+                bool isUserMessage =
+                    widget.messages[index].startsWith("You:");
                 return _buildMessageWidget(
                     widget.messages[index], isUserMessage);
               },

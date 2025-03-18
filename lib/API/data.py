@@ -81,6 +81,23 @@ def fatch_id(email):
         con.close()
     pass
 
+def fatch_email(id):
+    db=database()
+    try:
+        con=db.cursor()
+        query=f"select * from user_detail where uid='{id}'"
+        con.execute(query)
+        row=con.fetchone()
+        print(row)
+        return row[2]
+    except Exception as e:
+        print(e)
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        # return {"status":"500","msg":"Internal Server Error"}
+    finally:
+        con.close()
+    pass
+
 def send_email(to_mail):
     otp=""
     for i in range(6):
@@ -224,7 +241,7 @@ async def InsertPdf(response: Response,uid,name):
     pass
 
 
-async def insert_embedding_details(collection_name,uid,pdfid):
+async def insert_embedding_details(response: Response,collection_name,uid,pdfid):
     db=database()
     try:
         con=db.cursor()
@@ -271,7 +288,7 @@ async def UploadPdf(response: Response,token: str = Form(...),file: UploadFile =
     pass 
 
 @app.post("/feedback")
-async def feedback(data:details):
+async def feedback(response: Response,data:details):
     db=database()
     try:
         email=decode_jwt(data.token)
@@ -322,7 +339,7 @@ def returnChunks(collection_name, message,uid):
 
 
 @app.post("/chat")
-async def chat(request: details):
+async def chat(response: Response,request: details):
 
     print("chat")
     print(request.collactionName)
@@ -377,7 +394,7 @@ async def addToJson(data:details):
     pass
 
 @app.post("/getdata")
-async def getdata(data:details):
+async def getdata(response: Response,data:details):
     db=database()
     try:
         print("token")
@@ -401,6 +418,64 @@ async def getdata(data:details):
     finally:
         con.close()
     pass
+
+# @app.get("/showfb")
+# async def showfb():
+#     db=database()
+#     try:
+#         con=db.cursor()
+#         query=f"select * from feedback_detail;"
+#         con.execute(query)
+#         row=con.fetchone()
+#         print(row)
+#         if row == None:
+#             response.status_code = status.HTTP_404_NOT_FOUND
+#             # return {"status":"404","msg":"user not found"}
+#         else:
+#             print(len(row))
+#             row={"email":fatch_email(row[1]),"feedback":row[2],"star":row[3],"datetime":row[4]}
+#             print(row)
+#             # return {"message": "Successfully","name":row["name"],"email":row["email"],"pass":row["password"]}
+#     except Exception as e:
+#         print(e)
+#         # response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+#     finally:
+#         con.close()
+#     pass
+
+@app.get("/showfb")
+async def showfb(response: Response):
+    db = database()
+    try:
+        con = db.cursor()
+        query = "SELECT * FROM feedback_detail;"
+        con.execute(query)
+        rows = con.fetchall()  # Fetch all rows
+        
+        if not rows:  # Check if the list is empty
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return {"status": "404", "msg": "No feedback found"}
+        
+        feedback_list = []
+        for row in rows:
+            feedback_list.append({
+                "email": fatch_email(row[1]),
+                "feedback": row[2],
+                "star": row[3],
+                "datetime": row[4]
+            })
+        
+        return {"message": "Successfully retrieved", "feedbacks": feedback_list}
+    
+    except Exception as e:
+        print(e)
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"status": "500", "msg": "Internal Server Error"}
+    
+    finally:
+        con.close()  # Close the connection after fetching all results
+  # Now close the connection
+
 
 
 @app.get("/endChat")
