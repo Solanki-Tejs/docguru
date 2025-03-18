@@ -196,6 +196,7 @@ class _EmailVeriState extends State<EmailVeri> {
                               MaterialPageRoute(
                                   builder: (context) => Newpass(
                                         email: widget.email,
+                                        pagename: "SignIn",
                                       )));
                         }
                       } else {

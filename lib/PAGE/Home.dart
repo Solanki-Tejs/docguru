@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:docguru/PAGE/SignIn.dart';
 import 'package:docguru/PAGE/setting.dart';
@@ -20,43 +21,44 @@ class _HomeState extends State<Home> {
   List<String> CollactionNames = [];
   List<List<String>> chatMessages = [];
   List<bool> uploadStatuses = [];
+  var pic,token;
   int currentPageIndex = 0;
-  late String userName;
-  late String email;
-  late String profile;
-
+  var userName;
+  var email;
+  var profile;
   @override
   void initState() {
     super.initState();
     loadPages();
-    loadProfile();
+    loaddata();
   }
 
-  Future<void> loadProfile() async {
+  Future<void> loaddata() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    userName = prefs.getString("userName") ?? "default";
-    email = prefs.getString("email") ?? "default@mail";
-    profile = prefs.getString("profile") ?? "default";
+    userName = prefs.getString("userName");
+    email = prefs.getString("email");
   }
 
   // Loading pages and chat messages from SharedPreferences
   Future<void> loadPages() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    int pageCount = prefs.getInt('page_count') ?? 0;
-    int? onPage = prefs.getInt("onPage") ?? 0;
+    token=prefs.getString("token");
+    pic=prefs.getString("profilePic_${token}");
+    int pageCount = prefs.getInt('page_count_${token}') ?? 0;
+    int? onPage = prefs.getInt("onPage_${token}") ?? 0;
     List<String> loadedPageNames = [];
     List<String> loadedCollactionNames = [];
     List<bool> loadedUploadStatuses = [];
     List<List<String>> loadedChatMessages = [];
 
     for (int i = 0; i < pageCount; i++) {
-      loadedCollactionNames.add(prefs.getString('CollactionNames_${i}_name') ??
+      loadedCollactionNames.add(prefs.getString('CollactionNames_${i}_name_${token}') ??
           "CollactionNames ${i + 1}");
-      loadedPageNames.add(prefs.getString('page_${i}_name') ?? "Page ${i + 1}");
+      loadedPageNames.add(prefs.getString('page_${i}_name_${token}') ?? "Page ${i + 1}");
 
       loadedUploadStatuses
-          .add(prefs.getBool('page_${i}_upload_status') ?? false);
-      loadedChatMessages.add(prefs.getStringList('page_${i}_messages') ??
+          .add(prefs.getBool('page_${i}_upload_status_${token}') ?? false);
+      loadedChatMessages.add(prefs.getStringList('page_${i}_messages_${token}') ??
           []); // Loading the chat messages
     }
 
@@ -73,7 +75,7 @@ class _HomeState extends State<Home> {
   // Add a new page and initialize chat messages
   void addPage() {
     setState(() {
-      CollactionNames.add("CollactionNames ${CollactionNames.length + 1}");
+      CollactionNames.add("CollactionNames ${CollactionNames.length + 1}_${token}");
       pageNames.add("Page ${pageNames.length + 1}");
 
       uploadStatuses.add(false);
@@ -89,11 +91,11 @@ class _HomeState extends State<Home> {
     prefs.setInt('page_count', pageNames.length);
 
     for (int i = 0; i < pageNames.length; i++) {
-      prefs.setString('page_${i}_name', pageNames[i]);
-      prefs.setString('CollactionNames_${i}_name', CollactionNames[i]);
-      prefs.setBool('page_${i}_upload_status', uploadStatuses[i]);
+      prefs.setString('page_${i}_name_${token}', pageNames[i]);
+      prefs.setString('CollactionNames_${i}_name_${token}', CollactionNames[i]);
+      prefs.setBool('page_${i}_upload_status_${token}', uploadStatuses[i]);
       prefs.setStringList(
-          'page_${i}_messages', chatMessages[i]); // Save chat messages
+          'page_${i}_messages_${token}', chatMessages[i]); // Save chat messages
     }
   }
 
@@ -173,7 +175,7 @@ class _HomeState extends State<Home> {
     double scrheight = size.height;
     print(scrheight);
     print(scrwidth);
-
+    // pic=prefs.getString("profilePic");
     return Scaffold(
       key: scaffoldKey,
       extendBodyBehindAppBar: true,
@@ -217,10 +219,10 @@ class _HomeState extends State<Home> {
                             borderRadius: BorderRadius.circular(8)),
                         child: Row(
                           children: [
-                            CircleAvatar(),
-                            SizedBox(
-                              width: 20,
-                            ),
+                            Image(image: AssetImage("${pic}")),
+                            // SizedBox(
+                            //   width: 20,
+                            // ),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -361,8 +363,19 @@ class _HomeState extends State<Home> {
           builder: (context) {
             return pageNames.isEmpty
                 ? Center(
-                    child: Text("No Pages Created",
-                        style: TextStyle(fontSize: 24)))
+                  child: SizedBox(
+                    width: 1000,
+                    height: 50,
+                    child: ElevatedButton(onPressed: (){
+                      addPage();
+                    }, child: Column(
+                      children: [
+                        Text("start new page to ask us question from your pdf")
+                        
+                      ],
+                    )),
+                  ),
+                )
                 : uploadStatuses[currentPageIndex]
                     ? Container(
                         decoration: BoxDecoration(
@@ -386,6 +399,7 @@ class _HomeState extends State<Home> {
                               chatMessages[currentPageIndex] = updatedMessages;
                             });
                             savePages();
+                            return updatedMessages;
                           },
                         ),
                       )

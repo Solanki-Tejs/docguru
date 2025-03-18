@@ -39,6 +39,10 @@ flutter:
     - assets/.env
     - assets/splash.mp4
     - assets/splash_logo.png
+    - assets/p1.png
+    - assets/p2.png
+    - assets/p3.png
+    - assets/p4.png
 
   fonts:
   - family: TimesNewRoman

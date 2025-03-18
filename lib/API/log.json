@@ -1,0 +1,22 @@
+[
+    {
+        "uid": "23",
+        "pid": "86",
+        "question": "hello ",
+        "answer": "Bot: It seems like there's no specific question being asked based on the provided context. The text appears to be a passage about viewing in two dimensions, with definitions and explanations of terms such as \"window,\" \"viewport,\" and \"viewing transformation.\" If you meant to ask something else, please feel free to clarify or rephrase your question!",
+        "datetime": "2025-03-18 13:15:24.252927",
+        "startResponseTime": "12434",
+        "endResponseTime": "17546",
+        "finish": "true"
+    },
+    {
+        "uid": "23",
+        "pid": "86",
+        "question": "what up",
+        "answer": "Bot: Based on the provided context, I understand that \"what\" refers to the topic or subject being discussed. In this case, the topic is \"Clipping\". Therefore, my answer would be:\n\n\"What: Clipping\"\n\nPlease let me know if you have any further questions or if there's anything else I can help you with!",
+        "datetime": "2025-03-18 13:15:56.270822",
+        "startResponseTime": "12434",
+        "endResponseTime": "17441",
+        "finish": "true"
+    }
+]

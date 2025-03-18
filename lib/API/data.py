@@ -9,7 +9,7 @@ from database import database
 from typing import List,Optional,Dict
 from dotenv import load_dotenv
 from email.message import EmailMessage
-import jwt,os,random,smtplib,shutil,requests,json,time
+import jwt,os,random,smtplib,shutil,requests,json,time,re
 
 app=FastAPI()
 load_dotenv()
@@ -38,6 +38,11 @@ class details(BaseModel):
     collactionName: Optional[str]=None
     star:Optional[str]=None
     feedbackMSG:Optional[str]=None
+    que:Optional[str]=None
+    ans:Optional[str]=None
+    start: Optional[str] = None
+    end: Optional[str] = None
+    finish:Optional[str]=None
     pass
 
 if not os.path.exists(UploadDirectory):
@@ -118,7 +123,7 @@ async def SignIn(response: Response, data:details):
             row={"id":row[0],"name":row[1],"email":row[2],"password":row[3]}
             token=create_jwt(data.email)
             if(data.password==row["password"]):
-                return {"msg":"Successful","token":token}
+                return {"msg":"Successful","token":token,"name":row["name"],"email":row["email"]}
             else:
                 print("hello")
                 response.status_code = status.HTTP_401_UNAUTHORIZED
@@ -335,6 +340,67 @@ async def chat(request: details):
     print(f"Vector DB initialized in: {time.time() - start_time:.2f} seconds")
     return StreamingResponse(chatAgent(db, request.message), media_type="text/plain")
 
+
+@app.post("/addToJson")
+async def addToJson(data:details):
+    try:    
+        print(data.collactionName)
+        numbers = re.findall(r'\d+', data.collactionName)  # Find all groups of digits
+        pid=numbers[0]
+        uid=numbers[-1]
+        print(numbers)
+        new_data = {
+            "uid": uid, 
+            "pid": pid,
+            "question": data.que,
+            "answer":data.ans,
+            "datetime":f"{datetime.datetime.now()}",
+            "startResponseTime":data.start,
+            "endResponseTime":data.end,
+            "finish":data.finish}
+        try:
+            with open("log.json", "r") as file:
+                data = json.load(file)  # Load existing data
+        except (json.JSONDecodeError, FileNotFoundError):
+            # print(e)
+            data = []
+
+        if isinstance(data, dict):  
+            data = [data]
+
+        data.append(new_data)
+        
+        with open("log.json", "w") as file:
+            json.dump(data, file, indent=4)
+    except Exception as e:
+        print(e)
+    pass
+
+@app.post("/getdata")
+async def getdata(data:details):
+    db=database()
+    try:
+        print("token")
+        print(data.token)
+        email=decode_jwt(data.token)
+        con=db.cursor()
+        query=f"select * from user_detail where email='{email}'"
+        con.execute(query)
+        row=con.fetchone()
+        print(row)
+        if row == None:
+            response.status_code = status.HTTP_404_NOT_FOUND
+            # return {"status":"404","msg":"user not found"}
+        else:
+            row={"id":row[0],"name":row[1],"email":row[2],"password":row[3]}
+            print(row)
+            return {"message": "Successfully","name":row["name"],"email":row["email"],"pass":row["password"]}
+    except Exception as e:
+        print(e)
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    finally:
+        con.close()
+    pass
 
 
 @app.get("/endChat")

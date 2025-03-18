@@ -9,7 +9,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class Newpass extends StatefulWidget {
   final String email;
-  Newpass({super.key, required this.email});
+  final String pagename;
+  Newpass({
+    super.key,
+    required this.email,
+    required this.pagename,
+  });
 
   @override
   State<Newpass> createState() => _NewpassState();
@@ -39,8 +44,12 @@ class _NewpassState extends State<Newpass> {
         var Jres = await jsonDecode(res.body);
         print(Jres);
         if (res.statusCode == 200) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => SignIn()));
+          if (widget.pagename == "SignIn") {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => SignIn()));
+          } else {
+            Navigator.pop(context);
+          }
         }
       } catch (e) {
         print(e);

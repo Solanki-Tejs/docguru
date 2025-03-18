@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:docguru/PAGE/SignIn.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 // import 'package:flutter_dotenv/flutter_dotenv.dart';
 // import 'package:http/http.dart' as http;
@@ -30,6 +31,7 @@ class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
 
   Future<void> EmailCheck() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     var url = dotenv.env['URL']! + "EmailCheck";
 
     var data = {
@@ -37,6 +39,9 @@ class _SignUpState extends State<SignUp> {
     };
     var res = await http.post(Uri.parse(url),
         headers: {"Content-Type": "application/json"}, body: jsonEncode(data));
+
+    prefs.setString("userName", name.text);
+    prefs.setString("email", email.text);
 
     print(res.statusCode);
     if (res.statusCode != 403) {
@@ -66,12 +71,12 @@ class _SignUpState extends State<SignUp> {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(scrwidth / 10, 0, scrwidth / 10, 0),
-          child: Form(
-            key: _formKey,
-            child: Center(
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(scrwidth / 10, 0, scrwidth / 10, 0),
+            child: Form(
+              key: _formKey,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -221,7 +226,7 @@ class _SignUpState extends State<SignUp> {
                     },
                   ),
                   SizedBox(height: 30),
-
+                      
                   GestureDetector(
                     onTap: () {
                       if (_formKey.currentState!.validate()) {

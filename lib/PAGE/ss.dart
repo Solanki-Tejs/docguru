@@ -174,12 +174,15 @@
 //   }
 // }
 
+import 'dart:convert';
 import 'dart:ui';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:docguru/PAGE/Home.dart';
 import 'package:docguru/PAGE/SignIn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 import 'package:liquid_progress_indicator_v2/liquid_progress_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -209,6 +212,31 @@ class _Splashscreen extends State<Splashscreen>
     _initData();
   }
 
+  Future<void> getdata() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      var url = dotenv.env['URL']! + "getdata";
+      print(url);
+      var token = prefs.getString('token');
+      print(token);
+      var data = {"token": token};
+      var res = await http.post(Uri.parse(url),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode(data));
+
+      var Jres = await jsonDecode(res.body);
+      print(res.statusCode);
+
+      if (res.statusCode == 200) {
+        prefs.setString("userName", Jres["name"]);
+        prefs.setString("email", Jres["email"]);
+        prefs.setString("pass", Jres["pass"]);
+      } else {}
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Future<void> _initData() async {
     prefs = await SharedPreferences.getInstance();
     String? isSignIn = prefs.getString('token');
@@ -216,11 +244,18 @@ class _Splashscreen extends State<Splashscreen>
     Future.delayed(
       const Duration(seconds: 3),
       () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (_) => isSignIn != null ? const Home() : SignIn()),
-        );
+        if (isSignIn != null) {
+          getdata();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => Home()),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => SignIn()),
+          );
+        }
       },
     );
   }
