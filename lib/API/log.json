@@ -28,5 +28,95 @@
         "startResponseTime": "70623",
         "endResponseTime": "71075",
         "finish": "true"
+    },
+    {
+        "uid": "18",
+        "pid": "108",
+        "question": "hi",
+        "answer": "Error: Unable to process the response.",
+        "datetime": "2025-03-19 14:05:54.033010",
+        "startResponseTime": "null",
+        "endResponseTime": "505",
+        "finish": "true"
+    },
+    {
+        "uid": "18",
+        "pid": "108",
+        "question": "summary of data",
+        "answer": "Error: Unable to process the response.",
+        "datetime": "2025-03-19 14:06:37.700022",
+        "startResponseTime": "null",
+        "endResponseTime": "438",
+        "finish": "true"
+    },
+    {
+        "uid": "18",
+        "pid": "108",
+        "question": "summary of the data ",
+        "answer": "Error: Unable to process the response.",
+        "datetime": "2025-03-19 14:07:16.479984",
+        "startResponseTime": "null",
+        "endResponseTime": "454",
+        "finish": "true"
+    },
+    {
+        "uid": "18",
+        "pid": "108",
+        "question": "hi ",
+        "answer": "Error: Unable to process the response.",
+        "datetime": "2025-03-19 14:08:37.406428",
+        "startResponseTime": "null",
+        "endResponseTime": "437",
+        "finish": "true"
+    },
+    {
+        "uid": "18",
+        "pid": "113",
+        "question": "summary of data ",
+        "answer": "Error: Unable to process the response.",
+        "datetime": "2025-03-19 14:19:16.133816",
+        "startResponseTime": "null",
+        "endResponseTime": "455",
+        "finish": "true"
+    },
+    {
+        "uid": "18",
+        "pid": "114",
+        "question": "summary of data ",
+        "answer": "Error: Unable to process the response.",
+        "datetime": "2025-03-19 14:19:39.400967",
+        "startResponseTime": "null",
+        "endResponseTime": "435",
+        "finish": "true"
+    },
+    {
+        "uid": "18",
+        "pid": "114",
+        "question": "hi",
+        "answer": "Error: Unable to process the response.",
+        "datetime": "2025-03-19 14:20:40.669988",
+        "startResponseTime": "null",
+        "endResponseTime": "434",
+        "finish": "true"
+    },
+    {
+        "uid": "18",
+        "pid": "115",
+        "question": "summary of data ",
+        "answer": "Bot: Based on the provided context, here is a summary of the data:\n\n* Students:\n\t+ Viren Patel (202202519010128)\n\t+ Sanyam Gehlot (202202519010137)\n\t+ Tejas Solanki (202202519010152)\n* Project details:\n\t+ Title: \"DocGuru\"\n\t+ Type: Application of Al Agent\n\t+ Supervisor: Piyush Patel\n* Course and semester:\n\t+ Integrated Master of Computer Application (IMCA) course\n\t+ Semester 6\n* Company details:\n\t+ Ikigai Infotech LLP\n\t+ Registered Address: 502,503 Dwarkesh Business Hub, Ahmedabad, Gujarat 382424\n\t+ PAN: AAGFI1141L\n\t+ GST: 24AAGFI1141L1ZL",
+        "datetime": "2025-03-19 14:30:25.956320",
+        "startResponseTime": "10044",
+        "endResponseTime": "28600",
+        "finish": "true"
+    },
+    {
+        "uid": "20",
+        "pid": "116",
+        "question": "what is pdf about ",
+        "answer": "Bot: Based on the provided context, it appears that this is a list of names and associated information (e.g., student ID numbers, etc.) for some sort of educational or professional purpose. The \"pdf\" mentioned in the question seems to refer to a Portable Document Format file, which is a common format used to store electronic documents.\n\nHowever, without more specific information about what this PDF contains or what it's supposed to represent, I can't provide any more detailed information about its content.",
+        "datetime": "2025-03-19 14:31:30.729286",
+        "startResponseTime": "11945",
+        "endResponseTime": "22429",
+        "finish": "true"
     }
 ]

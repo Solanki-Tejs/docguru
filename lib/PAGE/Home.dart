@@ -29,8 +29,8 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    loadPages();
     loadProfile();
+    loadPages();
   }
 
   Future<void> loadProfile() async {
@@ -38,7 +38,7 @@ class _HomeState extends State<Home> {
     token = prefs.getString("token") ?? "default";
     userName = prefs.getString("userName") ?? "default";
     email = prefs.getString("email") ?? "default@mail";
-    profile = prefs.getString("profilePic_${token}") ?? "default";
+    profile = prefs.getString("profilePic_${token}") ?? "assets/p1.png";
     print(token);
     print(profile);
   }
@@ -57,11 +57,11 @@ class _HomeState extends State<Home> {
 
   Future<void> loadPages() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userEmail = prefs.getString("email"); // Get the logged-in user
-    if (userEmail == null) return;
+    // String? userEmail = prefs.getString("email"); // Get the logged-in user
+    // if (userEmail == null) return;
 
-    int pageCount = prefs.getInt('${userEmail}_page_count') ?? 0;
-    int? onPage = prefs.getInt("${userEmail}_onPage") ?? 0;
+    int pageCount = prefs.getInt('page_count_${email}') ?? 0;
+    int? onPage = prefs.getInt("onPage_${email}") ?? 0;
 
     List<String> loadedPageNames = [];
     List<String> loadedCollactionNames = [];
@@ -70,14 +70,14 @@ class _HomeState extends State<Home> {
 
     for (int i = 0; i < pageCount; i++) {
       loadedCollactionNames.add(
-          prefs.getString('${userEmail}_CollactionNames_${i}_name') ??
+          prefs.getString('CollactionNames_${i}_name_${email}') ??
               "CollactionNames ${i + 1}");
-      loadedPageNames.add(
-          prefs.getString('${userEmail}_page_${i}_name') ?? "Page ${i + 1}");
+      loadedPageNames
+          .add(prefs.getString('page_${i}_name_${email}') ?? "Page ${i + 1}");
       loadedUploadStatuses
-          .add(prefs.getBool('${userEmail}_page_${i}_upload_status') ?? false);
+          .add(prefs.getBool('page_${i}_upload_status_${email}') ?? false);
       loadedChatMessages
-          .add(prefs.getStringList('${userEmail}_page_${i}_messages') ?? []);
+          .add(prefs.getStringList('page_${i}_messages_${email}') ?? []);
     }
 
     setState(() {
@@ -103,17 +103,16 @@ class _HomeState extends State<Home> {
 
   void savePages() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userEmail = prefs.getString("email");
-    if (userEmail == null) return;
+    // String? userEmail = prefs.getString("email");
+    // if (userEmail == null) return;
 
-    prefs.setInt('${userEmail}_page_count', pageNames.length);
+    prefs.setInt('page_count_${email}', pageNames.length);
 
     for (int i = 0; i < pageNames.length; i++) {
-      prefs.setString('${userEmail}_page_${i}_name', pageNames[i]);
-      prefs.setString(
-          '${userEmail}_CollactionNames_${i}_name', CollactionNames[i]);
-      prefs.setBool('${userEmail}_page_${i}_upload_status', uploadStatuses[i]);
-      prefs.setStringList('${userEmail}_page_${i}_messages', chatMessages[i]);
+      prefs.setString('page_${i}_name_${email}', pageNames[i]);
+      prefs.setString('CollactionNames_${i}_name_${email}', CollactionNames[i]);
+      prefs.setBool('page_${i}_upload_status_${email}', uploadStatuses[i]);
+      prefs.setStringList('page_${i}_messages_${email}', chatMessages[i]);
     }
   }
 
@@ -233,8 +232,10 @@ class _HomeState extends State<Home> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           leading: IconButton(
-            icon: Icon(Icons.menu_rounded),
-            onPressed: () => scaffoldKey.currentState?.openDrawer(),
+            icon: Icon(Icons.align_horizontal_left_rounded),
+            onPressed: () {
+              scaffoldKey.currentState?.openDrawer(); 
+            },
           ),
           title: const Text("DocGuru", style: TextStyle(color: Colors.white)),
         ),

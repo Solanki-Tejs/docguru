@@ -37,7 +37,8 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> onPage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt("onPage", widget.pageIndex);
+    var email = prefs.getString("email");
+    prefs.setInt("onPage_${email}", widget.pageIndex);
   }
 
   void _scrollToBottom() {
@@ -47,116 +48,6 @@ class _ChatPageState extends State<ChatPage> {
       }
     });
   }
-
-  // Future<void> _stopMessage() async {
-  //   print('Stopping the message');
-
-  //   var url = dotenv.env['URL']! + "endChat";
-  //   await http
-  //       .get(Uri.parse(url)); // Stop message from server side if necessary
-
-  //   setState(() {
-  //     isSend = false;
-  //     int botIndex = widget.messages.length - 1;
-  //     if (widget.messages[botIndex] == "loading...") {
-  //       widget.messages[botIndex] = "Bot: Ended";
-  //     }
-  //   });
-
-  //   // Cancel the ongoing response stream
-  //   if (_responseSubscription != null) {
-  //     await _responseSubscription?.cancel();
-  //     print("Stream has been canceled");
-  //   }
-
-  //   widget.onMessagesUpdated(widget.messages);
-  // }
-
-  // Future<void> _sendMessage(String message) async {
-  //   if (message.isEmpty) return;
-
-  //   final startTime = DateTime.now();
-
-  //   setState(() {
-  //     isSend = true;
-  //     widget.messages.add("You: $message");
-  //   });
-  //   _scrollToBottom();
-
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   var collactionName =
-  //       prefs.getString('CollactionNames_${widget.pageIndex}_name');
-  //   print("Collection Name: $collactionName");
-
-  //   String? token = prefs.getString('token');
-  //   var url = dotenv.env['URL']! + "chat";
-  //   try {
-  //     final request = http.Request("POST", Uri.parse(url));
-  //     request.headers["Content-Type"] = "application/json";
-  //     request.body = jsonEncode({
-  //       "message": message,
-  //       "collactionName": collactionName,
-  //       "token": token
-  //     });
-
-  //     final response = await http.Client().send(request);
-
-  //     if (response.statusCode == 200) {
-  //       String botReply = "";
-
-  //       // Add a placeholder message for the bot (loading state)
-  //       setState(() {
-  //         widget.messages.add("loading...");
-  //       });
-  //       _scrollToBottom();
-
-  //       int botIndex = widget.messages.length - 1;
-
-  //       // Store the stream subscription
-  //       _responseSubscription =
-  //           response.stream.transform(utf8.decoder).listen((chunk) {
-  //         final endTime = DateTime.now();
-  //         final responseTime = endTime.difference(startTime).inMilliseconds;
-  //         print("Response Time: ${responseTime}ms");
-  //         print("Received chunk: $chunk");
-
-  //         botReply += chunk;
-
-  //         // Update bot's message in the UI
-  //         setState(() {
-  //           widget.messages[botIndex] = "Bot: $botReply";
-  //         });
-  //         _scrollToBottom();
-  //       }, onDone: () {
-  //         setState(() {
-  //           isSend = false;
-  //         });
-  //         print("Stream finished");
-  //         widget.onMessagesUpdated(widget.messages);
-  //       }, onError: (error) {
-  //         setState(() {
-  //           isSend = false;
-  //           widget.messages[botIndex] =
-  //               "Error: Unable to process the response.";
-  //         });
-  //         print("Stream error: $error");
-  //         _scrollToBottom();
-  //       });
-  //     } else {
-  //       setState(() {
-  //         isSend = false;
-  //         widget.messages.add("Error: Unable to get response from API.");
-  //       });
-  //       _scrollToBottom();
-  //     }
-  //   } catch (e) {
-  //     setState(() {
-  //       isSend = false;
-  //       widget.messages.add("Error: Unable to connect to the server.");
-  //     });
-  //     _scrollToBottom();
-  //   }
-  // }
 
   Future<void> addToJson(que, ans, collactionName, startResponseTime,
       endResponseTime, finish) async {
@@ -178,8 +69,9 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> _stopMessage() async {
     print('Stopping the message');
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    var email = prefs.getString("email");
     var collactionName =
-        prefs.getString('CollactionNames_${widget.pageIndex}_name');
+        prefs.getString('CollactionNames_${widget.pageIndex}_name_${email}');
     var url = dotenv.env['URL']! + "endChat";
     await http
         .get(Uri.parse(url)); // Stop message from server side if necessary
@@ -220,8 +112,9 @@ class _ChatPageState extends State<ChatPage> {
     _scrollToBottom();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    var email = prefs.getString("email");
     var collactionName =
-        prefs.getString('CollactionNames_${widget.pageIndex}_name');
+        prefs.getString('CollactionNames_${widget.pageIndex}_name_${email}');
     print("Collection Name: $collactionName");
 
     String? token = prefs.getString('token');

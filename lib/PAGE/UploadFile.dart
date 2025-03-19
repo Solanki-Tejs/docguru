@@ -40,7 +40,8 @@ class _UploadFileState extends State<UploadFile> {
 
   Future<void> onPage() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setInt("onPage", widget.pageIndex);
+    var email=prefs.getString("email");
+    prefs.setInt("onPage_${email}", widget.pageIndex);
   }
 
   Future<void> pickAndUploadPDF() async {
