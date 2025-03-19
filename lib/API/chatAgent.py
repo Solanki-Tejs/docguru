@@ -5,7 +5,7 @@ from langchain_ollama import OllamaLLM
 # from langchain.output_parsers import StrOutputParser
 import time
 import asyncio
-llm=OllamaLLM(model="llama3",streaming=True)
+llm=OllamaLLM(model="tinyllama",streaming=True)
 
 stop_event = asyncio.Event()
 

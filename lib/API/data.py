@@ -31,6 +31,7 @@ app.add_middleware(
 
 class details(BaseModel):
     name:Optional[str]=None
+    updatedName:Optional[str]=None
     email:Optional[str]=None
     password:Optional[str]=None
     token:Optional[str]=None 
@@ -241,7 +242,7 @@ async def InsertPdf(response: Response,uid,name):
     pass
 
 
-async def insert_embedding_details(response: Response,collection_name,uid,pdfid):
+async def insert_embedding_details(collection_name,uid,pdfid):
     db=database()
     try:
         con=db.cursor()
@@ -393,6 +394,28 @@ async def addToJson(data:details):
         print(e)
     pass
 
+@app.post("/updateUserName")
+async def getdata(response: Response,data:details):
+    db=database()
+    try:
+        print("token")
+        print(data.token)
+        print(data.updatedName)
+        email=decode_jwt(data.token)
+        print(email)
+        con=db.cursor()
+        query=f"UPDATE user_detail SET name = '{data.updatedName}' WHERE email = '{email}'"
+        con.execute(query)
+        db.commit()
+        return {"message": "Successfully Updated UserName"}
+    except Exception as e:
+        print(e)
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+    finally:
+        con.close()
+    pass
+
+
 @app.post("/getdata")
 async def getdata(response: Response,data:details):
     db=database()
@@ -478,6 +501,7 @@ async def showfb(response: Response):
 
 
 
+
 @app.get("/endChat")
 async def stop():
     stop_generation()
@@ -487,3 +511,4 @@ async def stop():
 def main():
     return {"msg":"hello world!"}
     pass
+

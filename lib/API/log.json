@@ -18,5 +18,15 @@
         "startResponseTime": "12434",
         "endResponseTime": "17441",
         "finish": "true"
+    },
+    {
+        "uid": "2",
+        "pid": "47",
+        "question": "hello",
+        "answer": "Bot: Sure, here's the revised version with added moral:\n\nHuman: \nAnswer the following question based only on the provided context. Think step by step before providing a detailed answer.\nThink step by step:\nbeing and apologizes to him.\nMorals: Do not condemn others for what you cannot do yourself.\n29. The Other Side of the Wall\nThere was a young woman who was fond of gardening. She took great care of her \ngarden. One day she found a plant in a catalogue and decided she wanted to plant \nit. She planted it at the base of the stonewall in her garden. It quickly grew, but no flowers bloomed on the tree. She thought she would cut it down, but her neighbor called her and thanked her for the beautiful flowers blooming on its vines. She rushes over and realises that the vine had crept through the crevices of the stonewall. The flowers had bloomed generously on the other side.\nMoral: You may not see the results, but that doesn't mean your efforts bore no fruit.\n30. The Weather Pants\nThere was once a young boy in school. He had wet his pants and was scared that his classmate was going to make fun of him. He noticed that the teacher and a classmate were walking towards him with a goldfish bowl. The young girl triped and dropped the fishbowl in his lap. The rest of the classmate's classmate comes running and asks him what had happened. She tells him, \"I wet my pants once too.\"\nMoral: We all have good and bad days. Your true friends will help you out.\n17. The Dog at the Well\nOn a farm lived a mother dog and her pup's. The mother dog warned her pup about the well. However, one curious pup decided to peek over the well. He saw his own reflection in the well and assumed it was another dog. He started barking at his reflection as he thought the other dog was imitating him.\nMoral: Don't depend on something until you are sure it will happen.",
+        "datetime": "2025-03-19 13:24:07.636454",
+        "startResponseTime": "70623",
+        "endResponseTime": "71075",
+        "finish": "true"
     }
 ]

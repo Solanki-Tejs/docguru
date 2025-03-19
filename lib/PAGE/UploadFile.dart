@@ -144,16 +144,6 @@ class _UploadFileState extends State<UploadFile> {
       }
 
       print('File uploaded successfully');
-      // } catch (e) {
-      //   setState(() {
-      //     _isUploading = false;
-      //   });
-      //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      //     content: Text('Error while uploading file,Try again'),
-      //     backgroundColor: Colors.red,
-      //   ));
-      //   print('Error uploading file: $e');
-      // }
     } finally {
       dio.close();
     }
@@ -161,76 +151,116 @@ class _UploadFileState extends State<UploadFile> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    double scrwidth = size.width;
+    double scrheight = size.height;
+
     onPage();
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // loader,
-            // loader1,
-            if (_isFilePicking)
-              CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
+        backgroundColor: Colors.transparent,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // loader,
+              // loader1,
+              if (_isFilePicking)
+                CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
 
-            if (_isUploading)
-              (_progress == 1.0)
-                  ? Column(
-                      children: [
-                        loader,
-                        SizedBox(height: 20),
-                        Text(
-                          'Vectorizing your pdf.',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+              if (_isUploading)
+                (_progress == 1.0)
+                    ? Column(
+                        children: [
+                          loader,
+                          SizedBox(height: 20),
+                          Text(
+                            'Vectorizing your pdf.',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                          Text(
+                            'This may take a few mintes ... ',
+                            style: TextStyle(fontSize: 12, color: Colors.white),
+                          ),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 80),
+                            child: LinearProgressIndicator(value: _progress),
+                          ),
+                          SizedBox(height: 20),
+                          Text(
+                            'Uploading... ${(_progress * 100).toStringAsFixed(0)}% \n Speed ${speedInMBps.toStringAsFixed(2)} MB/s ',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ],
+                      ),
+              // Button to trigger file picker
+              if (!_isUploading && !_isFilePicking)
+                Container(
+                  padding: EdgeInsets.all(24),
+                  width: scrwidth * .9,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.7),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.deepPurpleAccent.withOpacity(0.5),
+                        blurRadius: 12,
+                        spreadRadius: 2,
+                      )
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.upload_file, size: 80, color: Colors.white),
+                      SizedBox(height: 16),
+                      Text(
+                        "Upload your PDF",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Text(
-                          'This may take a few mintes ... ',
-                          style: TextStyle(fontSize: 12, color: Colors.white),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        "Ensure your file is in PDF format.",
+                        style: TextStyle(color: Colors.grey[400], fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 30),
+                      ElevatedButton.icon(
+                        icon: Icon(
+                          Icons.upload,
+                          color: Colors.white,
+                          // size: 30.0,
                         ),
-                      ],
-                    )
-                  : Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 80),
-                          child: LinearProgressIndicator(value: _progress),
+                        label: Text(
+                          'Upload PDF',
+                          style: TextStyle(color: Colors.white),
                         ),
-                        SizedBox(height: 20),
-                        Text(
-                          'Uploading... ${(_progress * 100).toStringAsFixed(0)}% \n Speed ${speedInMBps.toStringAsFixed(2)} MB/s ',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
-                        ),
-                      ],
-                    ),
-            // Button to trigger file picker
-            if (!_isUploading && !_isFilePicking)
-              ElevatedButton.icon(
-                icon: Icon(
-                  Icons.upload,
-                  color: Colors.white,
-                  // size: 30.0,
+                        onPressed: () {
+                          pickAndUploadPDF();
+                        },
+                        style: ButtonStyle(
+                            //color of button
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Colors.deepPurpleAccent),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ))),
+                      ),
+                    ],
+                  ),
                 ),
-                label: Text(
-                  'Upload PDF',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
-                  pickAndUploadPDF();
-                },
-                style: ButtonStyle(
-                    //color of button
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        Colors.deepPurpleAccent),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ))),
-              ),
-          ],
-        ),
-      ),
-    );
+            ],
+          ),
+        ));
   }
 }
