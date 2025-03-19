@@ -442,6 +442,38 @@ async def getdata(response: Response,data:details):
         con.close()
     pass
 
+
+@app.get("/getfaq")
+async def showfb(response: Response):
+    db = database()
+    try:
+        con = db.cursor()
+        query = "SELECT * FROM faq;"
+        con.execute(query)
+        rows = con.fetchall()  # Fetch all rows
+        
+        if not rows:
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return {"status": "404", "msg": "No feedback found"}
+        
+        faq_list = []
+        for row in rows:
+            faq_list.append({
+                "que": row[1],
+                "ans": row[2],
+                "isExpanded": False,
+            })
+        
+        return {"message": "Successfully retrieved", "faqs": faq_list}
+    
+    except Exception as e:
+        print(e)
+        response.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+        return {"status": "500", "msg": "Internal Server Error"}
+    
+    finally:
+        con.close()  # Close the connection after fetching all results
+
 # @app.get("/showfb")
 # async def showfb():
 #     db=database()

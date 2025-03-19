@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -271,8 +272,8 @@ class _ChatPageState extends State<ChatPage> {
                           color: Colors.white,
                           size: 15),
                     )
-                  : RichText(
-                      text: TextSpan(
+                  : SelectableText.rich(
+                      TextSpan(
                         style: TextStyle(color: Colors.white),
                         // color: isUserMessage ? Colors.white : Colors.black),
                         children: textSpans,
@@ -289,70 +290,88 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     onPage();
     _scrollToBottom();
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              itemCount: widget.messages.length,
-              itemBuilder: (context, index) {
-                bool isUserMessage = widget.messages[index].startsWith("You:");
-                return _buildMessageWidget(
-                    widget.messages[index], isUserMessage);
-              },
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        SystemChannels.textInput.invokeMethod('TextInput.hide');
+        // FocusScopeNode currentFocus = FocusScope.of(context);
+        // if (!currentFocus.hasPrimaryFocus &&
+        //     currentFocus.focusedChild != null) {
+        //   currentFocus.unfocus(); // Unfocus only if a text field is focused
+        // }
+      },
+      child: Scaffold(
+        onDrawerChanged: (isOpened) {
+          if (isOpened) {
+            FocusScope.of(context)
+                .unfocus(); // Ensure text field loses focus before opening drawer
+          }
+        },
+        backgroundColor: Colors.transparent,
+        body: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                controller: _scrollController,
+                itemCount: widget.messages.length,
+                itemBuilder: (context, index) {
+                  bool isUserMessage =
+                      widget.messages[index].startsWith("You:");
+                  return _buildMessageWidget(
+                      widget.messages[index], isUserMessage);
+                },
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    minLines: 1,
-                    maxLines: 8,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: "Enter your message...",
-                      hintStyle: TextStyle(color: Colors.white),
-                      filled: true,
-                      fillColor: Colors.black,
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50)),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      minLines: 1,
+                      maxLines: 8,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: "Enter your message...",
+                        hintStyle: TextStyle(color: Colors.white),
+                        filled: true,
+                        fillColor: Colors.black,
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50)),
+                      ),
                     ),
                   ),
-                ),
-                isSend
-                    ? SizedBox(
-                        width: 60,
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.stop_circle,
-                            color: Colors.white,
-                            size: 40,
+                  isSend
+                      ? SizedBox(
+                          width: 60,
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.stop_circle,
+                              color: Colors.white,
+                              size: 40,
+                            ),
+                            onPressed: () {
+                              _stopMessage();
+                              _controller.clear();
+                            },
                           ),
-                          onPressed: () {
-                            _stopMessage();
-                            _controller.clear();
-                          },
+                        )
+                      : SizedBox(
+                          width: 60,
+                          child: IconButton(
+                            icon: Icon(Icons.send, color: Colors.white),
+                            onPressed: () {
+                              _sendMessage(_controller.text);
+                              _controller.clear();
+                            },
+                          ),
                         ),
-                      )
-                    : SizedBox(
-                        width: 60,
-                        child: IconButton(
-                          icon: Icon(Icons.send, color: Colors.white),
-                          onPressed: () {
-                            _sendMessage(_controller.text);
-                            _controller.clear();
-                          },
-                        ),
-                      ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

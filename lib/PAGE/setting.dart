@@ -1,6 +1,8 @@
 import 'package:docguru/PAGE/AboutUs.dart';
+import 'package:docguru/PAGE/FAQ.dart';
 import 'package:docguru/PAGE/Feedback.dart';
 import 'package:docguru/PAGE/Profile.dart';
+import 'package:docguru/PAGE/contact_us.dart';
 import 'package:flutter/material.dart';
 
 class Setting extends StatefulWidget {
@@ -16,7 +18,7 @@ class _SettingState extends State<Setting> with SingleTickerProviderStateMixin {
   final List<String> _settingsOptions = [
     "GENERAL",
     "Personal Info",
-    "Manage Chat",
+    "FAQ",
     "Contact Support",
     "About Us",
     "FEEDBACK",
@@ -145,7 +147,7 @@ class _SettingState extends State<Setting> with SingleTickerProviderStateMixin {
       case "Personal Info":
         icon = Icons.person;
         break;
-      case "Manage Chat":
+      case "FAQ":
         icon = Icons.chat_bubble;
         break;
       case "Contact Support":
@@ -177,11 +179,13 @@ class _SettingState extends State<Setting> with SingleTickerProviderStateMixin {
                 MaterialPageRoute(builder: (context) => ProfilePage()));
             // print(title);
             break;
-          case "Manage Chat":
-            print(title);
+          case "FAQ":
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => FAQScreen()));
             break;
           case "Contact Support":
-            print(title);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => ContactUsPage()));
             break;
           case "About Us":
             Navigator.push(context,

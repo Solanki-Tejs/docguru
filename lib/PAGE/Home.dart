@@ -49,7 +49,7 @@ class _HomeState extends State<Home> {
       token = prefs.getString("token") ?? "default";
       userName = prefs.getString("userName") ?? "default";
       email = prefs.getString("email") ?? "default@mail";
-      profile = prefs.getString("profilePic_${token}") ?? "default";
+      profile = prefs.getString("profilePic_${token}") ?? "assets/p1.png";
     });
     print(token);
     print(profile);
@@ -234,7 +234,7 @@ class _HomeState extends State<Home> {
           leading: IconButton(
             icon: Icon(Icons.align_horizontal_left_rounded),
             onPressed: () {
-              scaffoldKey.currentState?.openDrawer(); 
+              scaffoldKey.currentState?.openDrawer();
             },
           ),
           title: const Text("DocGuru", style: TextStyle(color: Colors.white)),
@@ -271,6 +271,7 @@ class _HomeState extends State<Home> {
                               CircleAvatar(
                                 backgroundColor: Colors.white,
                                 backgroundImage: AssetImage(profile),
+                                // radius: 20,
                               ),
                               SizedBox(
                                 width: 20,
@@ -281,9 +282,13 @@ class _HomeState extends State<Home> {
                                   children: [
                                     Text(
                                       userName,
-                                      style: TextStyle(color: Colors.white),
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     Text(email,
+                                        overflow: TextOverflow.ellipsis,
                                         style: TextStyle(color: Colors.white)),
                                   ],
                                 ),
@@ -417,54 +422,51 @@ class _HomeState extends State<Home> {
             ),
           ),
         ),
-        body: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Builder(
-            builder: (context) {
-              return pageNames.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            "No Pages Created",
-                            style: TextStyle(fontSize: 24, color: Colors.white),
+        body: Builder(
+          builder: (context) {
+            return pageNames.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "No Pages Created",
+                          style: TextStyle(fontSize: 24, color: Colors.white),
+                        ),
+                        SizedBox(height: 20), // Add spacing
+                        ElevatedButton.icon(
+                          onPressed: addPage, // Call the addPage function
+                          icon: Icon(Icons.add),
+                          label: Text("Add Page"),
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 12),
+                            textStyle: TextStyle(fontSize: 18),
                           ),
-                          SizedBox(height: 20), // Add spacing
-                          ElevatedButton.icon(
-                            onPressed: addPage, // Call the addPage function
-                            icon: Icon(Icons.add),
-                            label: Text("Add Page"),
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 12),
-                              textStyle: TextStyle(fontSize: 18),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : uploadStatuses[currentPageIndex]
-                      ? ChatPage(
-                          pageName: pageNames[currentPageIndex],
-                          pageIndex: currentPageIndex,
-                          messages: chatMessages[currentPageIndex],
-                          onMessagesUpdated: (updatedMessages) {
-                            setState(() {
-                              chatMessages[currentPageIndex] = updatedMessages;
-                            });
-                            savePages();
-                          },
-                        )
-                      : UploadFile(
-                          toggleUploadStatus: () =>
-                              toggleUploadStatus(currentPageIndex),
-                          pageIndex: currentPageIndex,
-                          onNameChange: (name, Filename) =>
-                              setPageName(currentPageIndex, name, Filename),
-                        );
-            },
-          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : uploadStatuses[currentPageIndex]
+                    ? ChatPage(
+                        pageName: pageNames[currentPageIndex],
+                        pageIndex: currentPageIndex,
+                        messages: chatMessages[currentPageIndex],
+                        onMessagesUpdated: (updatedMessages) {
+                          setState(() {
+                            chatMessages[currentPageIndex] = updatedMessages;
+                          });
+                          savePages();
+                        },
+                      )
+                    : UploadFile(
+                        toggleUploadStatus: () =>
+                            toggleUploadStatus(currentPageIndex),
+                        pageIndex: currentPageIndex,
+                        onNameChange: (name, Filename) =>
+                            setPageName(currentPageIndex, name, Filename),
+                      );
+          },
         ),
       ),
     );
