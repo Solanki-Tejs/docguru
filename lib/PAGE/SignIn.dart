@@ -39,10 +39,8 @@ class _SignInState extends State<SignIn> {
         prefs.setString("token", Jres["token"]);
         prefs.setString("userName", Jres["name"]);
         prefs.setString("email", Jres["email"]);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Home()),
-        );
+    Navigator.pushAndRemoveUntil(
+        context, MaterialPageRoute(builder: (context) => const Home()),(Route)=>false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

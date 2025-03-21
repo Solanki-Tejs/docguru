@@ -79,8 +79,10 @@ class _EmailVeriState extends State<EmailVeri> {
       if (res.statusCode == 200) {
         print("hello world!");
         prefs.setString("token", Jres["token"]);
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => Home()));
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const Home()),
+            (Route) => false);
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

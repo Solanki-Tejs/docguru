@@ -42,22 +42,22 @@ class ContactUsPage extends StatelessWidget {
               ),
               SizedBox(height: 40),
 
-              _buildRoundedTextField(context, "Email", "your-email@example.com",
+              _buildRoundedTextField(context, "Email", "docguru.mail@gmail.com",
                   Icons.email_outlined),
               SizedBox(height: 20),
 
-              _buildRoundedTextField(context, "Working Hours",
-                  "Mon - Fri, 9 AM - 6 PM", Icons.access_time),
-              SizedBox(height: 20),
 
               _buildRoundedTextField(
-                  context, "GitHub", "github.com/yourprofile", Icons.code),
+                  context, "GitHub", "github.com/Docguru", Icons.code),
               SizedBox(height: 20),
 
               _buildRoundedTextField(context, "X (Twitter)",
-                  "twitter.com/yourhandle", Icons.alternate_email),
-              SizedBox(height: 40),
+                  "twitter.com/DocguruMail", Icons.alternate_email),
+              SizedBox(height: 20),
 
+              _buildRoundedTextField(context, "Support Hours",
+                  "Mon - Fri, 9 AM - 6 PM", Icons.access_time),
+              SizedBox(height: 40),
               // Support Message (Larger & Centered)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10),

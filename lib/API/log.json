@@ -118,5 +118,115 @@
         "startResponseTime": "11945",
         "endResponseTime": "22429",
         "finish": "true"
+    },
+    {
+        "uid": "25",
+        "pid": "125",
+        "question": "what is a golden egg ",
+        "answer": "Bot: Based on the provided context, a Golden Egg refers to an egg that is literally made of gold. In the story \"The Golden Egg\", it is mentioned that a goose laid one golden egg a day, which the farmer would sell and enjoy a comfortable life.",
+        "datetime": "2025-03-21 14:06:15.630653",
+        "startResponseTime": "11982",
+        "endResponseTime": "17721",
+        "finish": "true"
+    },
+    {
+        "uid": "25",
+        "pid": "125",
+        "question": "what is a golden egg ",
+        "answer": "Bot: Based on the provided context, a golden egg refers to an egg laid by a goose that had a golden yolk. In the story \"The Golden Egg\", a farmer had a goose that laid one golden egg a day, which he would sell and enjoy a comfortable life with his wife.",
+        "datetime": "2025-03-21 14:09:15.987406",
+        "startResponseTime": "11982",
+        "endResponseTime": "19110",
+        "finish": "true"
+    },
+    {
+        "uid": "25",
+        "pid": "125",
+        "question": "who is king lother",
+        "answer": "Bot: I don't have enough details to answer this question. The provided context does not contain any information about a person named \"King Lothar\".",
+        "datetime": "2025-03-21 14:10:16.658743",
+        "startResponseTime": "11982",
+        "endResponseTime": "16255",
+        "finish": "true"
+    },
+    {
+        "uid": "25",
+        "pid": "125",
+        "question": "what is a golden egg ",
+        "answer": "Bot: A golden egg.",
+        "datetime": "2025-03-21 14:13:04.734876",
+        "startResponseTime": "13324",
+        "endResponseTime": "14222",
+        "finish": "true"
+    },
+    {
+        "uid": "25",
+        "pid": "125",
+        "question": "what is a golden egg ",
+        "answer": "Bot: A golden egg.",
+        "datetime": "2025-03-21 14:17:54.808936",
+        "startResponseTime": "12833",
+        "endResponseTime": "13680",
+        "finish": "true"
+    },
+    {
+        "uid": "25",
+        "pid": "125",
+        "question": "what is a golden ",
+        "answer": "Bot: A treasure that brings ruin, as seen in the story of the King who turned his daughter into gold when he was hugged by her.",
+        "datetime": "2025-03-21 14:18:59.033076",
+        "startResponseTime": "12833",
+        "endResponseTime": "16435",
+        "finish": "true"
+    },
+    {
+        "uid": "25",
+        "pid": "125",
+        "question": "what is a golden egg ",
+        "answer": "Bot: One golden egg a day.",
+        "datetime": "2025-03-21 14:19:48.515548",
+        "startResponseTime": "13105",
+        "endResponseTime": "14167",
+        "finish": "true"
+    },
+    {
+        "uid": "25",
+        "pid": "125",
+        "question": "what is a golden egg ",
+        "answer": "Bot: A golden egg.",
+        "datetime": "2025-03-21 14:20:42.166219",
+        "startResponseTime": "13105",
+        "endResponseTime": "13543",
+        "finish": "true"
+    },
+    {
+        "uid": "25",
+        "pid": "125",
+        "question": "who is king aurther",
+        "answer": "Bot: The provided context does not mention King Arthur at all. Therefore, it is not possible to answer this question based on the given information.",
+        "datetime": "2025-03-21 14:22:04.042310",
+        "startResponseTime": "13105",
+        "endResponseTime": "16245",
+        "finish": "true"
+    },
+    {
+        "uid": "25",
+        "pid": "125",
+        "question": "explain moral of 2 story ",
+        "answer": "Bot: Based on the provided context, I will answer your question by explaining the morals of two stories.\n\n**Story 1:** \"The Golden Egg\"\n\nMoral: Think before you act.\n\nThis story teaches us to consider the consequences of our actions. The farmer became greedy and wanted more golden eggs from his goose, but he didn't stop to think about what would happen if he cut open the goose. As a result, he lost his only source of income and became poorer every day. This moral advises us to pause before making impulsive decisions and consider the potential outcomes.\n\n**Story 2:** \"The Miser and His Gold\"\n\nMoral: A possession is important only if you use it.\n\nThis story highlights the importance of using one's possessions wisely. The miser hoarded his gold without intending to spend it, but he didn't appreciate its value until it was stolen. The moral suggests that a possession has no value unless we use it or make the most of it. This applies not only to material wealth but also to skills, talents, and other resources.\n\nLet me know if you'd like me to explain the morals of more stories!",
+        "datetime": "2025-03-21 14:23:28.357104",
+        "startResponseTime": "13105",
+        "endResponseTime": "41754",
+        "finish": "true"
+    },
+    {
+        "uid": "25",
+        "pid": "125",
+        "question": "give me moral of story number 7",
+        "answer": "Bot: Based on the provided context, the moral of story number 7 is:\n\n\"Don't count your chickens before they hatch.\"",
+        "datetime": "2025-03-21 14:25:07.223372",
+        "startResponseTime": "13105",
+        "endResponseTime": "16244",
+        "finish": "true"
     }
 ]
